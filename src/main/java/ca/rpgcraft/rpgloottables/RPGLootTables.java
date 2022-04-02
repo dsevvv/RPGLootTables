@@ -1,6 +1,7 @@
 package ca.rpgcraft.rpgloottables;
 
 import ca.rpgcraft.rpgloottables.command.admin.MainMenuCommand;
+import ca.rpgcraft.rpgloottables.listeners.LootGenerateListener;
 import ca.rpgcraft.rpgloottables.listeners.MenuListener;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
 import org.bukkit.Bukkit;
@@ -29,6 +30,7 @@ public final class RPGLootTables extends JavaPlugin {
         getCommand("rl").setExecutor(mainMenuCommand);
 
         Bukkit.getPluginManager().registerEvents(new MenuListener(), this);
+        Bukkit.getPluginManager().registerEvents(new LootGenerateListener(), this);
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eHello Minecraft!"));
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eTime Elapsed: &b" + (System.currentTimeMillis() - startTime) + " &ems"));
