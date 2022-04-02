@@ -5,8 +5,8 @@ import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public class MainMenu extends Menu {
-    public MainMenu(PlayerMenuUtility playerMenuUtility) {
+public class CreateTableMenu extends Menu {
+    public CreateTableMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
     }
 
