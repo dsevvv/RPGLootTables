@@ -11,38 +11,38 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class MainMenu extends Menu {
-    public MainMenu(PlayerMenuUtility playerMenuUtility) {
+public class ChoiceCustomTableMenu extends Menu {
+    public ChoiceCustomTableMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
     }
 
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
-            case 1 -> new ListChestMenu(playerMenuUtility).open();
-            case 2 -> new ListMobMenu(playerMenuUtility).open();
-            case 3 -> new ChoiceCustomTableMenu(playerMenuUtility).open();
+            case 1 -> new CreateCustomTableMenu(playerMenuUtility).open();
+            case 2 -> new EditCustomTableMenu(playerMenuUtility).open();
+            case 3 -> new DeleteCustomTableMenu(playerMenuUtility).open();
             default -> open();
         }
     }
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(this, InventoryType.HOPPER, ChatColor.translateAlternateColorCodes('&', "     &6RPGLoot Main Menu"));
+        Inventory inv = Bukkit.createInventory(this, InventoryType.HOPPER, ChatColor.translateAlternateColorCodes('&', "     &6Custom Table Menu"));
 
-        ItemStack createLootTableItem = new ItemStack(Material.CHEST);
+        ItemStack createLootTableItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta meta0 = createLootTableItem.getItemMeta();
-        meta0.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Chest Tables"));
+        meta0.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aCreate Loot Table"));
         createLootTableItem.setItemMeta(meta0);
 
-        ItemStack editLootTableItem = new ItemStack(Material.ZOMBIE_HEAD);
+        ItemStack editLootTableItem = new ItemStack(Material.WRITABLE_BOOK);
         ItemMeta meta1 = editLootTableItem.getItemMeta();
-        meta1.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Mob Tables"));
+        meta1.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Loot Table"));
         editLootTableItem.setItemMeta(meta1);
 
-        ItemStack deleteLootTableItem = new ItemStack(Material.ENDER_CHEST);
+        ItemStack deleteLootTableItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta meta2 = deleteLootTableItem.getItemMeta();
-        meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Custom Tables"));
+        meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDelete Loot Table"));
         deleteLootTableItem.setItemMeta(meta2);
 
         inv.addItem(BLANK_ITEM, createLootTableItem, editLootTableItem, deleteLootTableItem, BLANK_ITEM);
