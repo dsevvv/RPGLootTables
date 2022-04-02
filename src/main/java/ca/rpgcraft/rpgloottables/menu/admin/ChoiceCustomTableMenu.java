@@ -11,29 +11,24 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class ChoiceTableMenu extends Menu {
-    public ChoiceTableMenu(PlayerMenuUtility playerMenuUtility) {
+public class ChoiceCustomTableMenu extends Menu {
+    public ChoiceCustomTableMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
     }
 
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
-            case 1 -> new CreateTableMenu(playerMenuUtility).open();
-            case 2 -> new EditTableMenu(playerMenuUtility).open();
-            case 3 -> new DeleteTableMenu(playerMenuUtility).open();
+            case 1 -> new CreateCustomTableMenu(playerMenuUtility).open();
+            case 2 -> new EditCustomTableMenu(playerMenuUtility).open();
+            case 3 -> new DeleteCustomTableMenu(playerMenuUtility).open();
             default -> open();
         }
     }
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(this, InventoryType.HOPPER, ChatColor.translateAlternateColorCodes('&', "     &6RPGLoot Main Menu"));
-
-        ItemStack blank = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta blankMeta = blank.getItemMeta();
-        blankMeta.setDisplayName("");
-        blank.setItemMeta(blankMeta);
+        Inventory inv = Bukkit.createInventory(this, InventoryType.HOPPER, ChatColor.translateAlternateColorCodes('&', "     &6Custom Table Menu"));
 
         ItemStack createLootTableItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta meta0 = createLootTableItem.getItemMeta();
@@ -50,7 +45,7 @@ public class ChoiceTableMenu extends Menu {
         meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDelete Loot Table"));
         deleteLootTableItem.setItemMeta(meta2);
 
-        inv.addItem(blank, createLootTableItem, editLootTableItem, deleteLootTableItem, blank);
+        inv.addItem(BLANK_ITEM, createLootTableItem, editLootTableItem, deleteLootTableItem, BLANK_ITEM);
 
         return inv;
     }
