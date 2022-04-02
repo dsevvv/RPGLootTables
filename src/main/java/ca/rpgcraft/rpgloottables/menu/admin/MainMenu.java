@@ -9,10 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class MainMenu extends Menu {
-
-
     public MainMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
     }
@@ -27,10 +26,19 @@ public class MainMenu extends Menu {
         Inventory inv = Bukkit.createInventory(this, InventoryType.HOPPER, ChatColor.translateAlternateColorCodes('&', "     &6RPGLoot Main Menu"));
 
         ItemStack createLootTableItem = new ItemStack(Material.EMERALD_BLOCK);
+        ItemMeta meta0 = createLootTableItem.getItemMeta();
+        meta0.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aCreate Loot Table"));
+        createLootTableItem.setItemMeta(meta0);
 
         ItemStack editLootTableItem = new ItemStack(Material.WRITABLE_BOOK);
+        ItemMeta meta1 = editLootTableItem.getItemMeta();
+        meta1.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Loot Table"));
+        editLootTableItem.setItemMeta(meta1);
 
         ItemStack deleteLootTableItem = new ItemStack(Material.REDSTONE_BLOCK);
+        ItemMeta meta2 = deleteLootTableItem.getItemMeta();
+        meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDelete Loot Table"));
+        deleteLootTableItem.setItemMeta(meta2);
 
         inv.addItem(createLootTableItem, editLootTableItem, deleteLootTableItem);
 
