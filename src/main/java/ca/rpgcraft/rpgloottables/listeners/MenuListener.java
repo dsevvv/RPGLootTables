@@ -16,6 +16,7 @@ public class MenuListener implements Listener {
         if(!(e.getInventory().getHolder() instanceof Menu menu)) return;
         if(e.getCurrentItem() == null) return;
 
+        e.setCancelled(true);
         Player player = (Player) e.getWhoClicked();
         menu.onMenuClick(player, e.getRawSlot());
     }

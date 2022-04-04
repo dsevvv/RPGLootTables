@@ -11,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.UUID;
+
 public class ChoiceCustomTableMenu extends Menu {
     public ChoiceCustomTableMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
@@ -19,18 +21,38 @@ public class ChoiceCustomTableMenu extends Menu {
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
-            case 1 -> new CreateCustomTableMenu(playerMenuUtility).open();
-            case 2 -> new EditCustomTableMenu(playerMenuUtility).open();
-            case 3 -> new DeleteCustomTableMenu(playerMenuUtility).open();
-            default -> open();
+            case 11:
+                playerMenuUtility.setLootTableName(UUID.randomUUID().toString().replace("-", ""));
+                playerMenuUtility.setEnabled(false);
+                playerMenuUtility.setChance(100);
+                new CreateCustomTableMenu(playerMenuUtility).open();
+                break;
+            case 13:
+                new EditCustomTableMenu(playerMenuUtility).open();
+                break;
+            case 15:
+                new DeleteCustomTableMenu(playerMenuUtility).open();
+                break;
+            case 22:
+                new MainMenu(playerMenuUtility).open();
+                break;
+            default:
+                open();
+                break;
         }
     }
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(this, InventoryType.HOPPER, ChatColor.translateAlternateColorCodes('&', "     &6Custom Table Menu"));
+        Inventory inv = Bukkit.createInventory(this, InventoryType.CHEST, ChatColor.translateAlternateColorCodes('&', "&0         Custom Table Menu"));
 
-        ItemStack createLootTableItem = new ItemStack(Material.EMERALD_BLOCK);
+        for(int i = 0; i < 27; i++){
+            if((i > 9 && i < 17) || i == 22) continue;
+            inv.setItem(i, BLANK_ITEM);
+        }
+        inv.setItem(22, BACK_ITEM);
+
+        ItemStack createLootTableItem = new ItemStack(Material.GREEN_CONCRETE);
         ItemMeta meta0 = createLootTableItem.getItemMeta();
         meta0.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aCreate Loot Table"));
         createLootTableItem.setItemMeta(meta0);
@@ -40,12 +62,14 @@ public class ChoiceCustomTableMenu extends Menu {
         meta1.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Loot Table"));
         editLootTableItem.setItemMeta(meta1);
 
-        ItemStack deleteLootTableItem = new ItemStack(Material.REDSTONE_BLOCK);
+        ItemStack deleteLootTableItem = new ItemStack(Material.RED_CONCRETE);
         ItemMeta meta2 = deleteLootTableItem.getItemMeta();
         meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDelete Loot Table"));
         deleteLootTableItem.setItemMeta(meta2);
 
-        inv.addItem(BLANK_ITEM, createLootTableItem, editLootTableItem, deleteLootTableItem, BLANK_ITEM);
+        inv.setItem(11, createLootTableItem);
+        inv.setItem(13, editLootTableItem);
+        inv.setItem(15, deleteLootTableItem);
 
         return inv;
     }

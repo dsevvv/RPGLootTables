@@ -30,7 +30,7 @@ public final class RPGLootTables extends JavaPlugin {
         getCommand("rl").setExecutor(mainMenuCommand);
 
         Bukkit.getPluginManager().registerEvents(new MenuListener(), this);
-        Bukkit.getPluginManager().registerEvents(new LootGenerateListener(), this);
+        Bukkit.getPluginManager().registerEvents(new LootGenerateListener(this), this);
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eHello Minecraft!"));
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eTime Elapsed: &b" + (System.currentTimeMillis() - startTime) + " &ems"));
