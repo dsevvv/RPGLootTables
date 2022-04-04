@@ -25,6 +25,8 @@ public class ChoiceCustomTableMenu extends Menu {
                 playerMenuUtility.setLootTableName(UUID.randomUUID().toString().replace("-", ""));
                 playerMenuUtility.setEnabled(false);
                 playerMenuUtility.setChance(100);
+                playerMenuUtility.setMaxTableItems(1);
+                playerMenuUtility.setMinTableItems(1);
                 new CreateCustomTableMenu(playerMenuUtility).open();
                 break;
             case 13:

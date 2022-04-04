@@ -2,6 +2,8 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
+import ca.rpgcraft.rpgloottables.util.CustomLootTableUtility;
+import ca.rpgcraft.rpgloottables.util.LootTableUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
@@ -16,6 +18,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CreateCustomTableMenu extends Menu {
 
@@ -89,6 +92,52 @@ public class CreateCustomTableMenu extends Menu {
                 }
                 open();
                 break;
+            case 19:
+                if(playerMenuUtility.getMinTableItems() == 0){
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cMinimum items cannot be negative!"));
+                    open();
+                    break;
+                }
+                playerMenuUtility.setMinTableItems(playerMenuUtility.getMinTableItems() - 1);
+                open();
+                break;
+            case 21:
+                if(playerMenuUtility.getMinTableItems() == playerMenuUtility.getMaxTableItems()){
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cMinimum items cannot larger than maximum items!"));
+                    open();
+                    break;
+                }
+                playerMenuUtility.setMinTableItems(playerMenuUtility.getMinTableItems() + 1);
+                open();
+                break;
+            case 23:
+                if(playerMenuUtility.getMaxTableItems() == 1){
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cMaximum items cannot be 0!"));
+                    open();
+                    break;
+                }
+                if(playerMenuUtility.getMinTableItems() == playerMenuUtility.getMaxTableItems()){
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cMaximum items cannot smaller than minimum items!"));
+                    open();
+                    break;
+                }
+                playerMenuUtility.setMaxTableItems(playerMenuUtility.getMaxTableItems() - 1);
+                open();
+                break;
+            case 25:
+                playerMenuUtility.setMaxTableItems(playerMenuUtility.getMaxTableItems() + 1);
+                open();
+                break;
+            case 43:
+                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a" + playerMenuUtility.getLootTableName() + " saved!"));
+                CustomLootTableUtility customLootTableUtility = new CustomLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getItems(), playerMenuUtility.isEnabled(), playerMenuUtility.getChance(), playerMenuUtility.getMinTableItems(), playerMenuUtility.getMaxTableItems());
+                LootTableUtility.getLoadedTables().put(UUID.randomUUID(), customLootTableUtility);
+                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aLoaded Tables: "));
+                LootTableUtility.getLoadedTables().forEach((uuid, customLootTable) -> {
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + customLootTable.getName()));
+                });
+                new ChoiceCustomTableMenu(playerMenuUtility).open();
+                break;
             case 49:
                 new ChoiceCustomTableMenu(playerMenuUtility).open();
                 playerMenuUtility.setLootTableName("");
@@ -133,9 +182,67 @@ public class CreateCustomTableMenu extends Menu {
         chanceMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eChange Roll Chance"));
         chanceButton.setItemMeta(chanceMeta);
 
+        ItemStack decreaseMinButton = new ItemStack(Material.CRIMSON_BUTTON);
+        ItemMeta dMinMeta = decreaseMinButton.getItemMeta();
+        List<String> dMinLore = new ArrayList<>();
+        dMinLore.add(ChatColor.GRAY + "Decrease the minimum number");
+        dMinLore.add(ChatColor.GRAY + "of items that will generate");
+        dMinLore.add(ChatColor.GRAY + "from this specific table.");
+        dMinLore.add("");
+        dMinLore.add(ChatColor.YELLOW + "Min: " + ChatColor.GRAY + String.valueOf(playerMenuUtility.getMinTableItems()));
+        dMinMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDecrease Minimum Items"));
+        dMinMeta.setLore(dMinLore);
+        decreaseMinButton.setItemMeta(dMinMeta);
+
+        ItemStack increaseMinButton = new ItemStack(Material.WARPED_BUTTON);
+        ItemMeta iMinMeta = increaseMinButton.getItemMeta();
+        List<String> iMinLore = new ArrayList<>();
+        iMinLore.add(ChatColor.GRAY + "Increase the minimum number");
+        iMinLore.add(ChatColor.GRAY + "of items that will generate");
+        iMinLore.add(ChatColor.GRAY + "from this specific table.");
+        iMinLore.add("");
+        iMinLore.add(ChatColor.YELLOW + "Min: " + ChatColor.GRAY + String.valueOf(playerMenuUtility.getMinTableItems()));
+        iMinMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aIncrease Minimum Items"));
+        iMinMeta.setLore(iMinLore);
+        increaseMinButton.setItemMeta(iMinMeta);
+
+        ItemStack decreaseMaxButton = new ItemStack(Material.CRIMSON_BUTTON);
+        ItemMeta dMaxMeta = decreaseMaxButton.getItemMeta();
+        List<String> dMaxLore = new ArrayList<>();
+        dMaxLore.add(ChatColor.GRAY + "Decrease the maximum number");
+        dMaxLore.add(ChatColor.GRAY + "of items that will generate");
+        dMaxLore.add(ChatColor.GRAY + "from this specific table.");
+        dMaxLore.add("");
+        dMaxLore.add(ChatColor.YELLOW + "Max: " + ChatColor.GRAY + String.valueOf(playerMenuUtility.getMaxTableItems()));
+        dMaxMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDecrease Maximum Items"));
+        dMaxMeta.setLore(dMaxLore);
+        decreaseMaxButton.setItemMeta(dMaxMeta);
+
+        ItemStack increaseMaxButton = new ItemStack(Material.WARPED_BUTTON);
+        ItemMeta iMaxMeta = increaseMaxButton.getItemMeta();
+        List<String> iMaxLore = new ArrayList<>();
+        iMaxLore.add(ChatColor.GRAY + "Increase the maximum number");
+        iMaxLore.add(ChatColor.GRAY + "of items that will generate");
+        iMaxLore.add(ChatColor.GRAY + "from this specific table.");
+        iMaxLore.add("");
+        iMaxLore.add(ChatColor.YELLOW + "Max: " + ChatColor.GRAY + String.valueOf(playerMenuUtility.getMaxTableItems()));
+        iMaxMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aIncrease Maximum Items"));
+        iMaxMeta.setLore(iMaxLore);
+        increaseMaxButton.setItemMeta(iMaxMeta);
+
+        ItemStack confirmButton = new ItemStack(Material.EMERALD_BLOCK);
+        ItemMeta confirmMeta = confirmButton.getItemMeta();
+        confirmMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aSave and Exit"));
+        confirmButton.setItemMeta(confirmMeta);
+
         inv.setItem(11, renameItem);
         inv.setItem(13, chanceButton);
         inv.setItem(15, toggleGlobalStatus());
+        inv.setItem(19, decreaseMinButton);
+        inv.setItem(21, increaseMinButton);
+        inv.setItem(23, decreaseMaxButton);
+        inv.setItem(25, increaseMaxButton);
+        inv.setItem(43, confirmButton);
 
         return inv;
     }
