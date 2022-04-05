@@ -8,6 +8,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+
 public abstract class Menu implements InventoryHolder {
 
     protected PlayerMenuUtility playerMenuUtility;
@@ -62,6 +64,15 @@ public abstract class Menu implements InventoryHolder {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public ItemStack createItem(Material material, String displayName, String... lore){
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+        meta.setLore(Arrays.stream(lore).toList());
         item.setItemMeta(meta);
         return item;
     }

@@ -37,6 +37,8 @@ public class CustomLootTableUtility implements LootTable {
         int totalWeight = 0;
         int slots = random.nextInt(maxItems-minItems)+minItems;
 
+        if(random.nextDouble(100) > chance) return finalLoot;
+
         for(int weight : items.values()){
             totalWeight += weight;
         }

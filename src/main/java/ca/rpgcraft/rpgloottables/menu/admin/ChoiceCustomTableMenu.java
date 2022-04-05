@@ -1,7 +1,9 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
+import ca.rpgcraft.rpgloottables.util.LootTableUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,19 +23,16 @@ public class ChoiceCustomTableMenu extends Menu {
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
-            case 11:
-                playerMenuUtility.setLootTableName(UUID.randomUUID().toString().replace("-", ""));
+            case 12:
+                playerMenuUtility.setLootTableName("Table " + (LootTableUtility.getLoadedTables().size() + 1));
                 playerMenuUtility.setEnabled(false);
                 playerMenuUtility.setChance(100);
                 playerMenuUtility.setMaxTableItems(1);
                 playerMenuUtility.setMinTableItems(1);
-                new CreateCustomTableMenu(playerMenuUtility).open();
-                break;
-            case 13:
                 new EditCustomTableMenu(playerMenuUtility).open();
                 break;
-            case 15:
-                new DeleteCustomTableMenu(playerMenuUtility).open();
+            case 14:
+                new ListEditCustomTableMenu(playerMenuUtility, ChatColor.translateAlternateColorCodes('&', "     &0Edit Custom Loot Tables")).open();
                 break;
             case 22:
                 new MainMenu(playerMenuUtility).open();
@@ -64,14 +63,8 @@ public class ChoiceCustomTableMenu extends Menu {
         meta1.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Loot Table"));
         editLootTableItem.setItemMeta(meta1);
 
-        ItemStack deleteLootTableItem = new ItemStack(Material.RED_CONCRETE);
-        ItemMeta meta2 = deleteLootTableItem.getItemMeta();
-        meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDelete Loot Table"));
-        deleteLootTableItem.setItemMeta(meta2);
-
-        inv.setItem(11, createLootTableItem);
-        inv.setItem(13, editLootTableItem);
-        inv.setItem(15, deleteLootTableItem);
+        inv.setItem(12, createLootTableItem);
+        inv.setItem(14, editLootTableItem);
 
         return inv;
     }

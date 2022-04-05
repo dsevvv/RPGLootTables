@@ -1,5 +1,6 @@
 package ca.rpgcraft.rpgloottables.command.admin;
 
+import ca.rpgcraft.rpgloottables.RPGLootTables;
 import ca.rpgcraft.rpgloottables.menu.admin.MainMenu;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
 import org.bukkit.ChatColor;
@@ -22,17 +23,32 @@ public class MainMenuCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cOnly players can use this command."));
             return false;
         }
-        if(!player.hasPermission("rpgloot.admin")
-        && !player.isOp()){
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to do that."));
-        }
 
         if(args.length == 0) return false;
 
-        if(args[0].equalsIgnoreCase("menu")){
+        if(args[0].equalsIgnoreCase("menu")
+        || args[0].equalsIgnoreCase("m")){
+            if(!player.hasPermission("rpgloot.admin")
+                    && !player.isOp()){
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to do that."));
+                return false;
+            }
             PlayerMenuUtility playerMenuUtility = new PlayerMenuUtility(player);
             MainMenu mainMenu = new MainMenu(playerMenuUtility);
             mainMenu.open();
+            return false;
+        }
+
+        if(args[0].equalsIgnoreCase("version")
+        || args[0].equalsIgnoreCase("ver")
+        || args[0].equalsIgnoreCase("v")){
+            if(!player.hasPermission("rpgloot.version")){
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to do that."));
+                return false;
+            }
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6Authors:&a dSevvv, Schmidt."));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + RPGLootTables.getPlugin(RPGLootTables.class).getName() + " &av" + RPGLootTables.getPlugin(RPGLootTables.class).getDescription().getVersion()) + ".");
+            return false;
         }
 
         return false;

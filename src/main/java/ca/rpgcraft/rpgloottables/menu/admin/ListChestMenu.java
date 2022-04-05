@@ -45,6 +45,10 @@ public class ListChestMenu extends PaginatedMenu {
                 open();
                 break;
             default:
+                if(!getInventory().getItem(rawSlot).getType().equals(Material.CHEST)){
+                    open();
+                    break;
+                }
                 playerMenuUtility.setLootTableName(clickedItem.getItemMeta().getDisplayName());
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou chose &6" + clickedItem.getItemMeta().getDisplayName().replace("minecraft:", "") + "&a."));
                 break;

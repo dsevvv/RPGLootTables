@@ -21,9 +21,9 @@ public class MainMenu extends Menu {
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
-            case 12 -> new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
+            case 11 -> new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
             case 13 -> new ListMobMenu(playerMenuUtility, "     &0Vanilla Mob Loot Tables").open();
-            case 14 -> new ChoiceCustomTableMenu(playerMenuUtility).open();
+            case 15 -> new ChoiceCustomTableMenu(playerMenuUtility).open();
             case 22 -> new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -59,9 +59,9 @@ public class MainMenu extends Menu {
         meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Custom Tables"));
         editCustomTablesItem.setItemMeta(meta2);
 
-        inv.setItem(12, editChestTablesItem);
+        inv.setItem(11, editChestTablesItem);
         inv.setItem(13, editMobTablesItem);
-        inv.setItem(14, editCustomTablesItem);
+        inv.setItem(15, editCustomTablesItem);
 
         return inv;
     }

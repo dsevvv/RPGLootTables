@@ -1,10 +1,9 @@
 package ca.rpgcraft.rpgloottables.util;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 public class LootTableUtility {
-    private static final HashMap<UUID, CustomLootTableUtility> loadedTables = new HashMap<>();
+    private static final HashMap<String, CustomLootTableUtility> loadedTables = new HashMap<>();
 
     private static String[] mobLootTables = {
             "minecraft:entities/armor_stand",
@@ -152,7 +151,7 @@ public class LootTableUtility {
         return mobLootTables;
     }
 
-    public static HashMap<UUID, CustomLootTableUtility> getLoadedTables() {
+    public static HashMap<String, CustomLootTableUtility> getLoadedTables() {
         return loadedTables;
     }
 }
