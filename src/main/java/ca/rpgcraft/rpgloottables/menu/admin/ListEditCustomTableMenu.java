@@ -1,5 +1,6 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
+import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
 import ca.rpgcraft.rpgloottables.util.CustomLootTableUtility;
 import ca.rpgcraft.rpgloottables.util.LootTableUtility;
@@ -54,12 +55,12 @@ public class ListEditCustomTableMenu extends PaginatedMenu {
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou chose &6" + clickedItem.getItemMeta().getDisplayName() + "&a."));
                 String name = clickedItem.getItemMeta().getDisplayName();
                 HashMap<String, CustomLootTableUtility> loadedTables = LootTableUtility.getLoadedTables();
-                playerMenuUtility.setLootTableName(name);
+                playerMenuUtility.setLootTableName(loadedTables.get(name).getName());
                 playerMenuUtility.setChance(loadedTables.get(name).getChance());
                 playerMenuUtility.setEnabled(loadedTables.get(name).isEnabled());
                 playerMenuUtility.setMinTableItems(loadedTables.get(name).getMinItems());
                 playerMenuUtility.setMaxTableItems(loadedTables.get(name).getMaxItems());
-                playerMenuUtility.setItems(loadedTables.get(name).getItems());
+                playerMenuUtility.setTableEntries(loadedTables.get(name).getTableEntries());
                 new EditCustomTableMenu(playerMenuUtility).open();
                 break;
         }
@@ -72,16 +73,18 @@ public class ListEditCustomTableMenu extends PaginatedMenu {
         List<Double> customTableChances = new LinkedList<>();
         List<Integer> customTableMinItems = new LinkedList<>();
         List<Integer> customTableMaxItems = new LinkedList<>();
+        List<LinkedList<TableEntry>> customTableEntries = new LinkedList<>();
         LootTableUtility.getLoadedTables().forEach((name, customLootTableUtility) -> {
             customTableNames.add(customLootTableUtility.getName());
             customTableGlobals.add(customLootTableUtility.isEnabled());
             customTableChances.add(customLootTableUtility.getChance());
             customTableMinItems.add(customLootTableUtility.getMinItems());
             customTableMaxItems.add(customLootTableUtility.getMaxItems());
+            customTableEntries.add(customLootTableUtility.getTableEntries());
         });
 
         inventory.clear();
-        addMenuBorder();
+        addPaginatedMenuBorder();
 
         for(int i = 0; i < getMaxItemsPerPage(); i++){
             index = getMaxItemsPerPage() * page + i;
@@ -93,7 +96,9 @@ public class ListEditCustomTableMenu extends PaginatedMenu {
                         ChatColor.translateAlternateColorCodes('&', customTableNames.get(index)),
                         ChatColor.translateAlternateColorCodes('&', "&eGlobal: &7" + customTableGlobals.get(index)),
                         ChatColor.translateAlternateColorCodes('&', "&eChance: &7" + customTableChances.get(index)),
-                        ChatColor.translateAlternateColorCodes('&', "&eMin&7/&eMax: &7" + customTableMinItems.get(index) + "/" + customTableMaxItems.get(index))));
+                        ChatColor.translateAlternateColorCodes('&', "&eMin&7/&eMax: &7" + customTableMinItems.get(index) + "/" + customTableMaxItems.get(index)),
+                        ChatColor.translateAlternateColorCodes('&', "&eContents&7: " + customTableEntries.get(index).size()))
+                        );
             }
         }
 

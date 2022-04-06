@@ -1,6 +1,5 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
-import ca.rpgcraft.rpgloottables.menu.standard.Menu;
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
 import ca.rpgcraft.rpgloottables.util.LootTableUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
@@ -34,7 +33,6 @@ public class ListMobMenu extends PaginatedMenu {
                 break;
             case 49:
                 new MainMenu(playerMenuUtility).open();
-                playerMenuUtility.setLootTableName("");
                 break;
             case 50:
                 if(index + 1 >= LootTableUtility.getMobLootTables().length){
@@ -61,7 +59,7 @@ public class ListMobMenu extends PaginatedMenu {
         String[] vanillaMobTables = LootTableUtility.getMobLootTables();
 
         inventory.clear();
-        addMenuBorder();
+        addPaginatedMenuBorder();
 
         for(int i = 0; i < getMaxItemsPerPage(); i++){
             index = getMaxItemsPerPage() * page + i;

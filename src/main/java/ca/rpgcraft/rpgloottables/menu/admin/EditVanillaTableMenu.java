@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 
-public class EditChestMenu extends Menu {
-    public EditChestMenu(PlayerMenuUtility playerMenuUtility) {
+public class EditVanillaTableMenu extends Menu {
+    public EditVanillaTableMenu(PlayerMenuUtility playerMenuUtility) {
         super(playerMenuUtility);
     }
 
@@ -20,7 +20,7 @@ public class EditChestMenu extends Menu {
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(this, InventoryType.HOPPER, ChatColor.translateAlternateColorCodes('&', "&6" + playerMenuUtility.getLootTableName()));
+        Inventory inv = Bukkit.createInventory(this, InventoryType.CHEST, ChatColor.translateAlternateColorCodes('&', "&6" + playerMenuUtility.getLootTableName()));
 
 
 

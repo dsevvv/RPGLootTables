@@ -1,9 +1,9 @@
 package ca.rpgcraft.rpgloottables.util;
 
+import ca.rpgcraft.rpgloottables.item.TableEntry;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
 
 public class PlayerMenuUtility {
 
@@ -13,7 +13,7 @@ public class PlayerMenuUtility {
     private double chance;
     private int minTableItems;
     private int maxTableItems;
-    private HashMap<Map<String, ?>, Integer> items;
+    private LinkedList<TableEntry> tableEntries;
 
     public PlayerMenuUtility(Player owner) {
         this.owner = owner;
@@ -67,11 +67,11 @@ public class PlayerMenuUtility {
         this.maxTableItems = maxTableItems;
     }
 
-    public HashMap<Map<String, ?>, Integer> getItems() {
-        return items;
+    public LinkedList<TableEntry> getTableEntries() {
+        return tableEntries;
     }
 
-    public void setItems(HashMap<Map<String, ?>, Integer> items) {
-        this.items = items;
+    public void setTableEntries(LinkedList<TableEntry> tableEntries) {
+        this.tableEntries = tableEntries;
     }
 }

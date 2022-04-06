@@ -1,8 +1,8 @@
 package ca.rpgcraft.rpgloottables.util;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
+import ca.rpgcraft.rpgloottables.item.TableEntry;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
@@ -13,17 +13,17 @@ import java.util.*;
 public class CustomLootTableUtility implements LootTable {
 
     private String name;
-    private HashMap<Map<String, ?>, Integer> items;
-    private final HashMap<Map<String, ?>, Integer> itemsCopy;
+    private LinkedList<TableEntry> tableEntries;
+    private final LinkedList<TableEntry> entriesCopy;
     private boolean isEnabled;
     private double chance;
     private int minItems;
     private int maxItems;
 
-    public CustomLootTableUtility(String name, HashMap<Map<String, ?>, Integer> items, boolean isEnabled, double chance, int minItems, int maxItems){
+    public CustomLootTableUtility(String name, LinkedList<TableEntry> tableEntries, boolean isEnabled, double chance, int minItems, int maxItems){
         this.name = name;
-        this.items = items;
-        this.itemsCopy = items;
+        this.tableEntries = tableEntries;
+        this.entriesCopy = tableEntries;
         this.isEnabled = isEnabled;
         this.chance = chance;
         this.minItems = minItems;
@@ -33,32 +33,34 @@ public class CustomLootTableUtility implements LootTable {
     @Override
     public Collection<ItemStack> populateLoot(Random random, LootContext context) {
         Collection<ItemStack> finalLoot = new ArrayList<>();
-        Set<Map<String, ?>> serializedItemMap = items.keySet();
         int totalWeight = 0;
         int slots = random.nextInt(maxItems-minItems)+minItems;
 
         if(random.nextDouble(100) > chance) return finalLoot;
 
-        for(int weight : items.values()){
-            totalWeight += weight;
+        for(TableEntry entry : tableEntries){
+            totalWeight += entry.getWeight();
         }
 
         for(int i = 0; i <= slots; i++){
             int roll = random.nextInt(totalWeight)+1;
-            for(Map<String, ?> serializedItemStack : serializedItemMap){
-                int weight = items.get(serializedItemStack);
-                ItemStack item = (ItemStack) ConfigurationSerialization.deserializeObject(serializedItemStack, ItemStack.class);
+            for(TableEntry entry : tableEntries){
+                ItemStack itemStack = entry.getItemStack();
+                int weight = entry.getWeight();
+                int amount = random.nextInt(entry.getMaxAmt()-entry.getMinAmt())+ entry.getMinAmt();
+                itemStack.setAmount(amount);
                 if(roll <= weight){
-                    finalLoot.add(item);
+                    finalLoot.add(itemStack);
                     totalWeight -= weight;
-                    items.remove(serializedItemStack);
+                    tableEntries.remove(itemStack);
                     break;
                 }
                 roll -= weight;
             }
         }
 
-        items.putAll(itemsCopy);
+        tableEntries.clear();
+        tableEntries.addAll(entriesCopy);
         return finalLoot;
     }
 
@@ -128,11 +130,11 @@ public class CustomLootTableUtility implements LootTable {
         this.maxItems = maxItems;
     }
 
-    public HashMap<Map<String, ?>, Integer> getItems() {
-        return items;
+    public LinkedList<TableEntry> getTableEntries() {
+        return tableEntries;
     }
 
-    public void setItems(HashMap<Map<String, ?>, Integer> items) {
-        this.items = items;
+    public void setTableEntries(LinkedList<TableEntry> tableEntries) {
+        this.tableEntries = tableEntries;
     }
 }
