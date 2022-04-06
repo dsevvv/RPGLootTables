@@ -3,7 +3,6 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
 import ca.rpgcraft.rpgloottables.util.LootTableUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
-import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,7 +12,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 public class ChoiceCustomTableMenu extends Menu {
     public ChoiceCustomTableMenu(PlayerMenuUtility playerMenuUtility) {
@@ -29,6 +29,7 @@ public class ChoiceCustomTableMenu extends Menu {
                 playerMenuUtility.setChance(100);
                 playerMenuUtility.setMaxTableItems(1);
                 playerMenuUtility.setMinTableItems(1);
+                playerMenuUtility.setTableEntries(new LinkedList<>());
                 new EditCustomTableMenu(playerMenuUtility).open();
                 break;
             case 14:
@@ -47,11 +48,7 @@ public class ChoiceCustomTableMenu extends Menu {
     public Inventory getInventory() {
         Inventory inv = Bukkit.createInventory(this, InventoryType.CHEST, ChatColor.translateAlternateColorCodes('&', "&0         Custom Table Menu"));
 
-        for(int i = 0; i < 27; i++){
-            if((i > 9 && i < 17) || i == 22) continue;
-            inv.setItem(i, BLANK_ITEM);
-        }
-        inv.setItem(22, BACK_ITEM);
+        addMenuBorderSmall(inv, false);
 
         ItemStack createLootTableItem = new ItemStack(Material.GREEN_CONCRETE);
         ItemMeta meta0 = createLootTableItem.getItemMeta();

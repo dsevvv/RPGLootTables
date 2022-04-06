@@ -1,15 +1,21 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
+import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
 import ca.rpgcraft.rpgloottables.util.CustomLootTableUtility;
 import ca.rpgcraft.rpgloottables.util.LootTableUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,7 +25,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 public class EditCustomTableMenu extends Menu {
 
@@ -41,6 +46,7 @@ public class EditCustomTableMenu extends Menu {
                         .text(playerMenuUtility.getLootTableName())
                         .title(ChatColor.translateAlternateColorCodes('&', "&0Enter new name..."))
                         .plugin(RPGLootTables.getPlugin(RPGLootTables.class))
+                        .onClose(player -> open())
                         .onLeftInputClick(player -> {
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cName change cancelled."));
                             open();
@@ -64,10 +70,8 @@ public class EditCustomTableMenu extends Menu {
                         .text(doubleFormat.format(playerMenuUtility.getChance()))
                         .title(ChatColor.translateAlternateColorCodes('&', "&0Enter new chance..."))
                         .plugin(RPGLootTables.getPlugin(RPGLootTables.class))
-                        .onLeftInputClick(player -> {
-                            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cChance change cancelled."));
-                            open();
-                        })
+                        .onClose(player -> open())
+                        .onLeftInputClick(player -> open())
                         .onComplete((player, text) -> {
                             try {
                                 Double.parseDouble(text);
@@ -133,16 +137,46 @@ public class EditCustomTableMenu extends Menu {
                 playerMenuUtility.setMaxTableItems(playerMenuUtility.getMaxTableItems() + 1);
                 open();
                 break;
+            case 31:
+                whoClicked.closeInventory();
+                class PlayerChatListener implements Listener {
+                    @EventHandler
+                    public void onPlayerChat(PlayerChatEvent e){
+                        if(!e.getPlayer().equals(whoClicked)) return;
+                        switch (e.getMessage()){
+                            case "add":
+                                String itemName = whoClicked.getInventory().getItemInMainHand().getItemMeta().getDisplayName().isBlank() ?
+                                       ChatColor.YELLOW + WordUtils.capitalizeFully(whoClicked.getInventory().getItemInMainHand().getType().name().replace("_", " ")) : ChatColor.YELLOW + whoClicked.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
+                                e.setCancelled(true);
+                                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', itemName + " &aadded to &6" + playerMenuUtility.getLootTableName() + "&a."));
+                                playerMenuUtility.getTableEntries().add(new TableEntry(whoClicked.getInventory().getItemInMainHand(), 1, 1, 1));
+                                open();
+                                HandlerList.unregisterAll(this);
+                                break;
+                            case "cancel":
+                                e.setCancelled(true);
+                                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cItem entry cancelled."));
+                                open();
+                                HandlerList.unregisterAll(this);
+                                break;
+                        }
+                    }
+                }
+                Bukkit.getPluginManager().registerEvents(new PlayerChatListener(), RPGLootTables.getPlugin(RPGLootTables.class));
+                break;
+            case 33:
+                new ListItemsMenu(playerMenuUtility, ChatColor.translateAlternateColorCodes('&', "&0            Item List")).open();
+                break;
             case 37:
-                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&c" + playerMenuUtility.getLootTableName() + " deleted!"));
+                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + playerMenuUtility.getLootTableName() + " &cdeleted!"));
                 LootTableUtility.getLoadedTables().remove(playerMenuUtility.getLootTableName());
                 for(String name : oldNames)
                     LootTableUtility.getLoadedTables().remove(name);
                 new ChoiceCustomTableMenu(playerMenuUtility).open();
                 break;
             case 43:
-                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&a" + playerMenuUtility.getLootTableName() + " saved!"));
-                CustomLootTableUtility customLootTableUtility = new CustomLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getItems(), playerMenuUtility.isEnabled(), playerMenuUtility.getChance(), playerMenuUtility.getMinTableItems(), playerMenuUtility.getMaxTableItems());
+                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + playerMenuUtility.getLootTableName() + " &asaved!"));
+                CustomLootTableUtility customLootTableUtility = new CustomLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getTableEntries(), playerMenuUtility.isEnabled(), playerMenuUtility.getChance(), playerMenuUtility.getMinTableItems(), playerMenuUtility.getMaxTableItems());
                 LootTableUtility.getLoadedTables().put(playerMenuUtility.getLootTableName(), customLootTableUtility);
                 for(String name : oldNames)
                     LootTableUtility.getLoadedTables().remove(name);
@@ -160,105 +194,78 @@ public class EditCustomTableMenu extends Menu {
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(this, 54, ChatColor.translateAlternateColorCodes('&', "&0       Custom Table Creation"));
+        Inventory inv = Bukkit.createInventory(this, 54, ChatColor.translateAlternateColorCodes('&', "&0Editing " + playerMenuUtility.getLootTableName()));
 
-        for(int i = 0; i < 54; i++){
-            if((i > 9 && i < 17)
-            || (i > 18 && i < 26)
-            || (i > 27 && i < 35)
-            || (i > 36 && i < 44)
-            || i == 49) continue;
-            inv.setItem(i, BLANK_ITEM);
-        }
-        inv.setItem(49, BACK_ITEM);
+        addMenuBorderLarge(inv, false);
 
-        ItemStack renameItem = new ItemStack(Material.WRITABLE_BOOK);
-        ItemMeta renameMeta = renameItem.getItemMeta();
-        List<String> renameLore = new ArrayList<>();
-        renameLore.add(ChatColor.GRAY + playerMenuUtility.getLootTableName());
-        renameMeta.setLore(renameLore);
-        renameMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eRename Table"));
-        renameItem.setItemMeta(renameMeta);
-
-        ItemStack chanceButton = new ItemStack(Material.WRITABLE_BOOK);
-        ItemMeta chanceMeta = chanceButton.getItemMeta();
-        List<String> chanceLore = new ArrayList<>();
-        chanceLore.add(ChatColor.translateAlternateColorCodes('&', "&7This setting controls"));
-        chanceLore.add(ChatColor.translateAlternateColorCodes('&', "&7the likeliness that this"));
-        chanceLore.add(ChatColor.translateAlternateColorCodes('&', "&7table will generate items."));
-        chanceLore.add("");
-        chanceLore.add(ChatColor.translateAlternateColorCodes('&', "&e" + doubleFormat.format(playerMenuUtility.getChance()) + "%"));
-        chanceMeta.setLore(chanceLore);
-        chanceMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eChange Roll Chance"));
-        chanceButton.setItemMeta(chanceMeta);
-
-        ItemStack decreaseMinButton = new ItemStack(Material.CRIMSON_BUTTON);
-        ItemMeta dMinMeta = decreaseMinButton.getItemMeta();
-        List<String> dMinLore = new ArrayList<>();
-        dMinLore.add(ChatColor.GRAY + "Decrease the minimum number");
-        dMinLore.add(ChatColor.GRAY + "of items that will generate");
-        dMinLore.add(ChatColor.GRAY + "from this specific table.");
-        dMinLore.add("");
-        dMinLore.add(ChatColor.YELLOW + "Min: " + ChatColor.GRAY + String.valueOf(playerMenuUtility.getMinTableItems()));
-        dMinMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDecrease Minimum Items"));
-        dMinMeta.setLore(dMinLore);
-        decreaseMinButton.setItemMeta(dMinMeta);
-
-        ItemStack increaseMinButton = new ItemStack(Material.WARPED_BUTTON);
-        ItemMeta iMinMeta = increaseMinButton.getItemMeta();
-        List<String> iMinLore = new ArrayList<>();
-        iMinLore.add(ChatColor.GRAY + "Increase the minimum number");
-        iMinLore.add(ChatColor.GRAY + "of items that will generate");
-        iMinLore.add(ChatColor.GRAY + "from this specific table.");
-        iMinLore.add("");
-        iMinLore.add(ChatColor.YELLOW + "Min: " + ChatColor.GRAY + String.valueOf(playerMenuUtility.getMinTableItems()));
-        iMinMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aIncrease Minimum Items"));
-        iMinMeta.setLore(iMinLore);
-        increaseMinButton.setItemMeta(iMinMeta);
-
-        ItemStack decreaseMaxButton = new ItemStack(Material.CRIMSON_BUTTON);
-        ItemMeta dMaxMeta = decreaseMaxButton.getItemMeta();
-        List<String> dMaxLore = new ArrayList<>();
-        dMaxLore.add(ChatColor.GRAY + "Decrease the maximum number");
-        dMaxLore.add(ChatColor.GRAY + "of items that will generate");
-        dMaxLore.add(ChatColor.GRAY + "from this specific table.");
-        dMaxLore.add("");
-        dMaxLore.add(ChatColor.YELLOW + "Max: " + ChatColor.GRAY + String.valueOf(playerMenuUtility.getMaxTableItems()));
-        dMaxMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDecrease Maximum Items"));
-        dMaxMeta.setLore(dMaxLore);
-        decreaseMaxButton.setItemMeta(dMaxMeta);
-
-        ItemStack increaseMaxButton = new ItemStack(Material.WARPED_BUTTON);
-        ItemMeta iMaxMeta = increaseMaxButton.getItemMeta();
-        List<String> iMaxLore = new ArrayList<>();
-        iMaxLore.add(ChatColor.GRAY + "Increase the maximum number");
-        iMaxLore.add(ChatColor.GRAY + "of items that will generate");
-        iMaxLore.add(ChatColor.GRAY + "from this specific table.");
-        iMaxLore.add("");
-        iMaxLore.add(ChatColor.YELLOW + "Max: " + ChatColor.GRAY + String.valueOf(playerMenuUtility.getMaxTableItems()));
-        iMaxMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aIncrease Maximum Items"));
-        iMaxMeta.setLore(iMaxLore);
-        increaseMaxButton.setItemMeta(iMaxMeta);
-
-        ItemStack deleteButton = new ItemStack(Material.REDSTONE_BLOCK);
-        ItemMeta deleteMeta = deleteButton.getItemMeta();
-        deleteMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cDelete"));
-        deleteButton.setItemMeta(deleteMeta);
-
-        ItemStack confirmButton = new ItemStack(Material.EMERALD_BLOCK);
-        ItemMeta confirmMeta = confirmButton.getItemMeta();
-        confirmMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&aSave and Exit"));
-        confirmButton.setItemMeta(confirmMeta);
-
-        inv.setItem(11, renameItem);
-        inv.setItem(13, chanceButton);
+        inv.setItem(11, createItem(
+                Material.WRITABLE_BOOK,
+                ChatColor.translateAlternateColorCodes('&', "&eRename Table"),
+                ChatColor.GRAY + playerMenuUtility.getLootTableName())
+        );
+        inv.setItem(13, createItem(
+                Material.WRITABLE_BOOK,
+                ChatColor.translateAlternateColorCodes('&', "&eChange Roll Chance"),
+                ChatColor.translateAlternateColorCodes('&', "&7This setting controls"),
+                ChatColor.translateAlternateColorCodes('&', "&7the likeliness that this"),
+                ChatColor.translateAlternateColorCodes('&', "&7table will generate items."),
+                "",
+                ChatColor.translateAlternateColorCodes('&', "&e" + doubleFormat.format(playerMenuUtility.getChance()) + "%")
+        ));
         inv.setItem(15, toggleGlobalStatus());
-        inv.setItem(19, decreaseMinButton);
-        inv.setItem(21, increaseMinButton);
-        inv.setItem(23, decreaseMaxButton);
-        inv.setItem(25, increaseMaxButton);
-        inv.setItem(37, deleteButton);
-        inv.setItem(43, confirmButton);
+        inv.setItem(19, createItem(
+                Material.CRIMSON_BUTTON,
+                ChatColor.translateAlternateColorCodes('&', "&cDecrease Minimum Items"),
+                ChatColor.GRAY + "Decrease the minimum number",
+                ChatColor.GRAY + "of items that will generate",
+                ChatColor.GRAY + "from this specific table.",
+                "",
+                ChatColor.YELLOW + "Min: " + ChatColor.GRAY + playerMenuUtility.getMinTableItems()
+        ));
+        inv.setItem(21, createItem(
+                Material.WARPED_BUTTON,
+                ChatColor.translateAlternateColorCodes('&', "&aIncrease Minimum Items"),
+                ChatColor.GRAY + "Increase the minimum number",
+                ChatColor.GRAY + "of items that will generate",
+                ChatColor.GRAY + "from this specific table.",
+                "",
+                ChatColor.YELLOW + "Min: " + ChatColor.GRAY + playerMenuUtility.getMinTableItems()
+        ));
+        inv.setItem(23, createItem(
+                Material.CRIMSON_BUTTON,
+                ChatColor.translateAlternateColorCodes('&', "&cDecrease Maximum Items"),
+                ChatColor.GRAY + "Decrease the maximum number",
+                ChatColor.GRAY + "of items that will generate",
+                ChatColor.GRAY + "from this specific table.",
+                "",
+                ChatColor.YELLOW + "Max: " + ChatColor.GRAY + playerMenuUtility.getMaxTableItems()
+        ));
+        inv.setItem(25, createItem(
+                Material.WARPED_BUTTON,
+                ChatColor.translateAlternateColorCodes('&', "&aIncrease Maximum Items"),
+                ChatColor.GRAY + "Increase the maximum number",
+                ChatColor.GRAY + "of items that will generate",
+                ChatColor.GRAY + "from this specific table.",
+                "",
+                ChatColor.YELLOW + "Max: " + ChatColor.GRAY + playerMenuUtility.getMaxTableItems()
+        ));
+        inv.setItem(31, createItem(
+                Material.GREEN_CONCRETE,
+                ChatColor.translateAlternateColorCodes('&', "&aAdd Item")
+        ));
+        inv.setItem(33, createItem(
+                Material.WRITABLE_BOOK,
+                ChatColor.translateAlternateColorCodes('&', "&eEdit Items"),
+                ChatColor.translateAlternateColorCodes('&', "&eItems: &7" + playerMenuUtility.getTableEntries().size())
+        ));
+        inv.setItem(37, createItem(
+                Material.REDSTONE_BLOCK,
+                ChatColor.translateAlternateColorCodes('&', "&cDelete")
+        ));
+        inv.setItem(43, createItem(
+                Material.EMERALD_BLOCK,
+                ChatColor.translateAlternateColorCodes('&', "&aSave and Exit")
+        ));
 
         return inv;
     }

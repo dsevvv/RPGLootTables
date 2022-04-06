@@ -60,7 +60,7 @@ public class ListChestMenu extends PaginatedMenu {
         String[] vanillaChestTables = LootTableUtility.getChestLootTables();
 
         inventory.clear();
-        addMenuBorder();
+        addPaginatedMenuBorder();
 
         for(int i = 0; i < getMaxItemsPerPage(); i++){
             index = getMaxItemsPerPage() * page + i;

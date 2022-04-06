@@ -4,6 +4,7 @@ import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -75,5 +76,31 @@ public abstract class Menu implements InventoryHolder {
         meta.setLore(Arrays.stream(lore).toList());
         item.setItemMeta(meta);
         return item;
+    }
+
+    public void addMenuBorderSmall(Inventory singleChest, boolean willClose){
+        for(int i = 0; i < 27; i++){
+            if((i > 9 && i < 17) || i == 22) continue;
+            singleChest.setItem(i, BLANK_ITEM);
+        }
+        if(willClose)
+            singleChest.setItem(22, CLOSE_ITEM);
+        else
+            singleChest.setItem(22, BACK_ITEM);
+    }
+
+    public void addMenuBorderLarge(Inventory doubleChest, boolean willClose){
+        for(int i = 0; i < 54; i++){
+            if((i > 9 && i < 17)
+                    || (i > 18 && i < 26)
+                    || (i > 27 && i < 35)
+                    || (i > 36 && i < 44)
+                    || i == 49) continue;
+            doubleChest.setItem(i, BLANK_ITEM);
+        }
+        if(willClose)
+            doubleChest.setItem(49, CLOSE_ITEM);
+        else
+            doubleChest.setItem(49, BACK_ITEM);
     }
 }

@@ -19,7 +19,7 @@ public abstract class PaginatedMenu extends Menu {
         inventory = Bukkit.createInventory(this, 54, ChatColor.translateAlternateColorCodes('&', inventoryName));
     }
 
-    public void addMenuBorder(){
+    public void addPaginatedMenuBorder(){
         inventory.setItem(48, createItem(Material.DARK_OAK_BUTTON, ChatColor.GREEN + "<--"));
 
         inventory.setItem(49, BACK_ITEM);
