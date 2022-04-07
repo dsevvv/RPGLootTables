@@ -1,7 +1,7 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
-import ca.rpgcraft.rpgloottables.util.LootTableUtility;
+import ca.rpgcraft.rpgloottables.util.TableListUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,7 +12,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class ChoiceCustomTableMenu extends Menu {
@@ -24,7 +23,7 @@ public class ChoiceCustomTableMenu extends Menu {
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
             case 12:
-                playerMenuUtility.setLootTableName("Table " + (LootTableUtility.getLoadedTables().size() + 1));
+                playerMenuUtility.setLootTableName("Table " + (TableListUtility.getLoadedCustomTables().size() + 1));
                 playerMenuUtility.setEnabled(false);
                 playerMenuUtility.setChance(100);
                 playerMenuUtility.setMaxTableItems(1);

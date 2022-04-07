@@ -7,24 +7,26 @@ import java.util.LinkedList;
 
 public class PlayerMenuUtility {
 
-    private Player owner;
+    private final Player owner;
     private String lootTableName;
     private boolean isEnabled;
     private double chance;
     private int minTableItems;
     private int maxTableItems;
     private LinkedList<TableEntry> tableEntries;
+    private LinkedList<CustomLootTableUtility> associatedTables;
 
+    /**
+     * Creates an object that will store information for the player while they are navigating the menu.
+     * Input data will be read from this object and saved to the appropriate locations.
+     * @param owner Player that owns this instance.
+     */
     public PlayerMenuUtility(Player owner) {
         this.owner = owner;
     }
 
     public Player getOwner() {
         return owner;
-    }
-
-    public void setOwner(Player owner) {
-        this.owner = owner;
     }
 
     public String getLootTableName() {
@@ -73,5 +75,13 @@ public class PlayerMenuUtility {
 
     public void setTableEntries(LinkedList<TableEntry> tableEntries) {
         this.tableEntries = tableEntries;
+    }
+
+    public LinkedList<CustomLootTableUtility> getAssociatedTables() {
+        return associatedTables;
+    }
+
+    public void setAssociatedTables(LinkedList<CustomLootTableUtility> associatedTables) {
+        this.associatedTables = associatedTables;
     }
 }

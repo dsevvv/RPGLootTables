@@ -36,12 +36,10 @@ public class ListItemsMenu extends PaginatedMenu {
             ItemStack tempItem = tableEntries.get(i).getItemStack();
             ItemMeta meta = tempItem.getItemMeta();
             List<String> lore = new LinkedList<>();
-            List<String> oldLore = meta.getLore();
             lore.add(ChatColor.translateAlternateColorCodes('&', "&eWeight&7: " + tableEntries.get(i).getWeight()));
             lore.add(ChatColor.translateAlternateColorCodes('&', "&eMin Amount&7: " + tableEntries.get(i).getMinAmt()));
             lore.add(ChatColor.translateAlternateColorCodes('&', "&eMax Amount&7: " + tableEntries.get(i).getMaxAmt()));
             lore.add("");
-            lore.addAll(oldLore);
             meta.setLore(lore);
             meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);

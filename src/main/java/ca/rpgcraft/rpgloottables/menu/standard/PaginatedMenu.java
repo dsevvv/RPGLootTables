@@ -19,6 +19,9 @@ public abstract class PaginatedMenu extends Menu {
         inventory = Bukkit.createInventory(this, 54, ChatColor.translateAlternateColorCodes('&', inventoryName));
     }
 
+    /**
+     * Adds border and buttons to a paginated menu.
+     */
     public void addPaginatedMenuBorder(){
         inventory.setItem(48, createItem(Material.DARK_OAK_BUTTON, ChatColor.GREEN + "<--"));
 

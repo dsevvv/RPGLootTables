@@ -9,6 +9,13 @@ public class TableEntry {
     private Integer minAmt;
     private Integer maxAmt;
 
+    /**
+     * Custom table contents will be made up of instances of this object.
+     * @param itemStack ItemStack for this entry
+     * @param weight int likeliness that this entry will be chosen. Higher weight = higher chance.
+     * @param minAmt int minimum amount of ItemStacks
+     * @param maxAmt int maximum amount of ItemStacks
+     */
     public TableEntry(ItemStack itemStack, Integer weight, Integer minAmt, Integer maxAmt){
         this.itemStack = itemStack;
         this.weight = weight;

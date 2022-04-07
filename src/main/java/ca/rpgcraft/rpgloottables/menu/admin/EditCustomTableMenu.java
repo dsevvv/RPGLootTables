@@ -4,8 +4,9 @@ import ca.rpgcraft.rpgloottables.RPGLootTables;
 import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
 import ca.rpgcraft.rpgloottables.util.CustomLootTableUtility;
-import ca.rpgcraft.rpgloottables.util.LootTableUtility;
+import ca.rpgcraft.rpgloottables.util.TableListUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.VanillaLootTableUtility;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
@@ -52,7 +53,7 @@ public class EditCustomTableMenu extends Menu {
                             open();
                         })
                         .onComplete((player, text) -> {
-                            if(LootTableUtility.getLoadedTables().containsKey(text)){
+                            if(TableListUtility.getLoadedCustomTables().containsKey(text)){
                                 return AnvilGUI.Response.text(ChatColor.translateAlternateColorCodes('&', "&cName taken!"));
                             }
                             oldNames.add(playerMenuUtility.getLootTableName());
@@ -138,6 +139,13 @@ public class EditCustomTableMenu extends Menu {
                 open();
                 break;
             case 31:
+                whoClicked.sendTitle(
+                        ChatColor.translateAlternateColorCodes('&', "&bAdd Item"),
+                        "",
+                        10,
+                        40,
+                        10);
+                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aType &eadd &ato add the item in your main hand to the loot table.\nType &ecancel &ato cancel item entry."));
                 whoClicked.closeInventory();
                 class PlayerChatListener implements Listener {
                     @EventHandler
@@ -169,17 +177,28 @@ public class EditCustomTableMenu extends Menu {
                 break;
             case 37:
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + playerMenuUtility.getLootTableName() + " &cdeleted!"));
-                LootTableUtility.getLoadedTables().remove(playerMenuUtility.getLootTableName());
+                TableListUtility.getLoadedCustomTables().remove(playerMenuUtility.getLootTableName());
                 for(String name : oldNames)
-                    LootTableUtility.getLoadedTables().remove(name);
+                    TableListUtility.getLoadedCustomTables().remove(name);
                 new ChoiceCustomTableMenu(playerMenuUtility).open();
                 break;
             case 43:
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + playerMenuUtility.getLootTableName() + " &asaved!"));
                 CustomLootTableUtility customLootTableUtility = new CustomLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getTableEntries(), playerMenuUtility.isEnabled(), playerMenuUtility.getChance(), playerMenuUtility.getMinTableItems(), playerMenuUtility.getMaxTableItems());
-                LootTableUtility.getLoadedTables().put(playerMenuUtility.getLootTableName(), customLootTableUtility);
+                TableListUtility.getLoadedCustomTables().put(playerMenuUtility.getLootTableName(), customLootTableUtility);
+                for(VanillaLootTableUtility vanillaLootTableUtility : TableListUtility.getLoadedVanillaTables().values()){
+                    int i = 0;
+                    for(CustomLootTableUtility customUtility : vanillaLootTableUtility.getAssociatedTableList()){
+                        if(customUtility.getName().equalsIgnoreCase(playerMenuUtility.getLootTableName())
+                        || oldNames.contains(customUtility.getName())){
+                            vanillaLootTableUtility.getAssociatedTableList().remove(i);
+                            vanillaLootTableUtility.getAssociatedTableList().add(customLootTableUtility);
+                        }
+                        i++;
+                    }
+                }
                 for(String name : oldNames)
-                    LootTableUtility.getLoadedTables().remove(name);
+                    TableListUtility.getLoadedCustomTables().remove(name);
                 new ChoiceCustomTableMenu(playerMenuUtility).open();
                 break;
             case 49:
