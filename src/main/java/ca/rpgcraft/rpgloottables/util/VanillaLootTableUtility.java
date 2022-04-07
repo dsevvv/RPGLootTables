@@ -8,6 +8,12 @@ public class VanillaLootTableUtility {
     private LinkedList<CustomLootTableUtility> associatedTableList;
     private boolean keepVanillaLoot;
 
+    /**
+     * Used to hold information for a vanilla loot table.
+     * @param vanillaTableName String name of the table as registered in Minecraft
+     * @param associatedTableList List of custom tables that will roll along with this vanilla table
+     * @param keepVanillaLoot if false the loot determined by Minecraft will not generate
+     */
     public VanillaLootTableUtility(String vanillaTableName, LinkedList<CustomLootTableUtility> associatedTableList, boolean keepVanillaLoot){
         this.vanillaTableName = vanillaTableName;
         this.associatedTableList = associatedTableList;

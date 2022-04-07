@@ -16,6 +16,9 @@ import org.bukkit.loot.LootContext;
 
 import java.util.Random;
 
+/**
+ * Listens for loot events and will apply custom tables need be.
+ */
 public class LootGenerateListener implements Listener {
 
     @EventHandler

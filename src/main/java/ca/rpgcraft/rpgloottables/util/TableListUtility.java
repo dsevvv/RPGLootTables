@@ -2,6 +2,10 @@ package ca.rpgcraft.rpgloottables.util;
 
 import java.util.HashMap;
 
+/**
+ * Storage class for loaded VanillaTable objects and CustomTable objects.
+ * Also holds all the raw names of the vanilla tables.
+ */
 public class TableListUtility {
     private static final HashMap<String, CustomLootTableUtility> loadedCustomTables = new HashMap<>();
     private static final HashMap<String, VanillaLootTableUtility> loadedVanillaTables = new HashMap<>();
