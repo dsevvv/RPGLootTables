@@ -38,11 +38,7 @@ public class MainMenu extends Menu {
     public Inventory getInventory() {
         Inventory inv = Bukkit.createInventory(this, InventoryType.CHEST, ChatColor.translateAlternateColorCodes('&', "&0              Main Menu"));
 
-        for(int i = 0; i < 27; i++){
-            if((i > 9 && i < 17) || i == 22) continue;
-            inv.setItem(i, BLANK_ITEM);
-        }
-        inv.setItem(22, CLOSE_ITEM);
+        addMenuBorderSmall(inv, true);
 
         ItemStack editChestTablesItem = new ItemStack(Material.CHEST);
         ItemMeta meta0 = editChestTablesItem.getItemMeta();
