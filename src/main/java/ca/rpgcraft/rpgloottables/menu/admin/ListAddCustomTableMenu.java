@@ -2,19 +2,19 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
-import ca.rpgcraft.rpgloottables.util.CustomLootTableUtility;
-import ca.rpgcraft.rpgloottables.util.TableListUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.TableListUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
-public class ListEditCustomTableMenu extends PaginatedMenu {
-    public ListEditCustomTableMenu(PlayerMenuUtility playerMenuUtility, String inventoryName) {
+public class ListAddCustomTableMenu extends PaginatedMenu {
+    public ListAddCustomTableMenu(PlayerMenuUtility playerMenuUtility, String inventoryName) {
         super(playerMenuUtility, inventoryName);
     }
 
@@ -36,7 +36,7 @@ public class ListEditCustomTableMenu extends PaginatedMenu {
                 open();
                 break;
             case 49:
-                new ChoiceCustomTableMenu(playerMenuUtility).open();
+                new EditVanillaTableMenu(playerMenuUtility).open();
                 break;
             case 50:
                 if(index + 1 >= TableListUtility.getLoadedCustomTables().size()){
@@ -48,20 +48,13 @@ public class ListEditCustomTableMenu extends PaginatedMenu {
                 open();
                 break;
             default:
-                if(!getInventory().getItem(rawSlot).getType().equals(Material.CHEST)){
+                if(!clickedItem.getType().equals(Material.CHEST)){
                     open();
                     break;
                 }
-                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou chose &6" + clickedItem.getItemMeta().getDisplayName() + "&a."));
-                String name = clickedItem.getItemMeta().getDisplayName();
-                HashMap<String, CustomLootTableUtility> loadedTables = TableListUtility.getLoadedCustomTables();
-                playerMenuUtility.setLootTableName(loadedTables.get(name).getName());
-                playerMenuUtility.setChance(loadedTables.get(name).getChance());
-                playerMenuUtility.setEnabled(loadedTables.get(name).isEnabled());
-                playerMenuUtility.setMinTableItems(loadedTables.get(name).getMinItems());
-                playerMenuUtility.setMaxTableItems(loadedTables.get(name).getMaxItems());
-                playerMenuUtility.setTableEntries(loadedTables.get(name).getTableEntries());
-                new EditCustomTableMenu(playerMenuUtility).open();
+                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou added &6" + clickedItem.getItemMeta().getDisplayName() + " &ato &6" + playerMenuUtility.getLootTableName().replace("minecraft:", "") + "&a."));
+                playerMenuUtility.getAssociatedTables().add(TableListUtility.getLoadedCustomTables().get(clickedItem.getItemMeta().getDisplayName()));
+                new EditVanillaTableMenu(playerMenuUtility).open();
                 break;
         }
     }
@@ -98,7 +91,7 @@ public class ListEditCustomTableMenu extends PaginatedMenu {
                         ChatColor.translateAlternateColorCodes('&', "&eChance: &7" + customTableChances.get(index)),
                         ChatColor.translateAlternateColorCodes('&', "&eMin&7/&eMax: &7" + customTableMinItems.get(index) + "/" + customTableMaxItems.get(index)),
                         ChatColor.translateAlternateColorCodes('&', "&eContents&7: " + customTableEntries.get(index).size()))
-                        );
+                );
             }
         }
 

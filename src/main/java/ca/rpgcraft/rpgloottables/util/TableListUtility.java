@@ -2,8 +2,9 @@ package ca.rpgcraft.rpgloottables.util;
 
 import java.util.HashMap;
 
-public class LootTableUtility {
-    private static final HashMap<String, CustomLootTableUtility> loadedTables = new HashMap<>();
+public class TableListUtility {
+    private static final HashMap<String, CustomLootTableUtility> loadedCustomTables = new HashMap<>();
+    private static final HashMap<String, VanillaLootTableUtility> loadedVanillaTables = new HashMap<>();
 
     private static String[] mobLootTables = {
             "minecraft:entities/armor_stand",
@@ -80,23 +81,7 @@ public class LootTableUtility {
             "minecraft:entities/zombie",
             "minecraft:entities/zombie_horse",
             "minecraft:entities/zombie_villager",
-            "minecraft:entities/zombified_piglin",
-            "minecraft:entities/sheep/black",
-            "minecraft:entities/sheep/blue",
-            "minecraft:entities/sheep/brown",
-            "minecraft:entities/sheep/cyan",
-            "minecraft:entities/sheep/gray",
-            "minecraft:entities/sheep/green",
-            "minecraft:entities/sheep/light_blue",
-            "minecraft:entities/sheep/light_gray",
-            "minecraft:entities/sheep/lime",
-            "minecraft:entities/sheep/magenta",
-            "minecraft:entities/sheep/orange",
-            "minecraft:entities/sheep/pink",
-            "minecraft:entities/sheep/purple",
-            "minecraft:entities/sheep/red",
-            "minecraft:entities/sheep/white",
-            "minecraft:entities/sheep/yellow"
+            "minecraft:entities/zombified_piglin"
     };
 
     private static String[] chestLootTables = {
@@ -151,7 +136,9 @@ public class LootTableUtility {
         return mobLootTables;
     }
 
-    public static HashMap<String, CustomLootTableUtility> getLoadedTables() {
-        return loadedTables;
+    public static HashMap<String, CustomLootTableUtility> getLoadedCustomTables() {
+        return loadedCustomTables;
     }
+
+    public static HashMap<String, VanillaLootTableUtility> getLoadedVanillaTables(){ return loadedVanillaTables; }
 }

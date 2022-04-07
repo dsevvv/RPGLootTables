@@ -23,7 +23,7 @@ public class CustomLootTableUtility implements LootTable {
     public CustomLootTableUtility(String name, LinkedList<TableEntry> tableEntries, boolean isEnabled, double chance, int minItems, int maxItems){
         this.name = name;
         this.tableEntries = tableEntries;
-        this.entriesCopy = tableEntries;
+        this.entriesCopy = (LinkedList<TableEntry>) tableEntries.clone();
         this.isEnabled = isEnabled;
         this.chance = chance;
         this.minItems = minItems;
@@ -34,7 +34,8 @@ public class CustomLootTableUtility implements LootTable {
     public Collection<ItemStack> populateLoot(Random random, LootContext context) {
         Collection<ItemStack> finalLoot = new ArrayList<>();
         int totalWeight = 0;
-        int slots = random.nextInt(maxItems-minItems)+minItems;
+        int bound1 = maxItems - minItems == 0 ? 1 : maxItems - minItems;
+        int slots = random.nextInt(bound1)+minItems;
 
         if(random.nextDouble(100) > chance) return finalLoot;
 
@@ -42,12 +43,13 @@ public class CustomLootTableUtility implements LootTable {
             totalWeight += entry.getWeight();
         }
 
-        for(int i = 0; i <= slots; i++){
+        for(int i = 0; i < slots; i++){
             int roll = random.nextInt(totalWeight)+1;
             for(TableEntry entry : tableEntries){
                 ItemStack itemStack = entry.getItemStack();
                 int weight = entry.getWeight();
-                int amount = random.nextInt(entry.getMaxAmt()-entry.getMinAmt())+ entry.getMinAmt();
+                int bound2 = entry.getMaxAmt() -entry.getMinAmt() == 0 ? 1 : entry.getMaxAmt() - entry.getMinAmt();
+                int amount = random.nextInt(bound2)+ entry.getMinAmt();
                 itemStack.setAmount(amount);
                 if(roll <= weight){
                     finalLoot.add(itemStack);

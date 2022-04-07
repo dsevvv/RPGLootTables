@@ -69,6 +69,13 @@ public abstract class Menu implements InventoryHolder {
         return item;
     }
 
+    /**
+     * Creates an ItemStack of given Material type with given display name String, and given lore.
+     * @param material Material type to set on item
+     * @param displayName String to be set as ItemStack display name
+     * @param lore Strings to be added to ItemStack lore
+     * @return ItemStack of type material, a name displayName, and lore from provided lore Strings.
+     */
     public ItemStack createItem(Material material, String displayName, String... lore){
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
@@ -78,6 +85,11 @@ public abstract class Menu implements InventoryHolder {
         return item;
     }
 
+    /**
+     * Adds menu border to provided single chest
+     * @param singleChest Inventory 28 slots to have border
+     * @param willClose if true, inventory will have a "close" button instead of a "back" button
+     */
     public void addMenuBorderSmall(Inventory singleChest, boolean willClose){
         for(int i = 0; i < 27; i++){
             if((i > 9 && i < 17) || i == 22) continue;
@@ -89,6 +101,11 @@ public abstract class Menu implements InventoryHolder {
             singleChest.setItem(22, BACK_ITEM);
     }
 
+    /**
+     * Adds menu border to provided double chest
+     * @param doubleChest Inventory 54 slots to have border
+     * @param willClose if true, inventory will have a "close" button instead of a "back" button
+     */
     public void addMenuBorderLarge(Inventory doubleChest, boolean willClose){
         for(int i = 0; i < 54; i++){
             if((i > 9 && i < 17)

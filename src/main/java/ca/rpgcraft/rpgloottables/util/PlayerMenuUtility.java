@@ -14,6 +14,7 @@ public class PlayerMenuUtility {
     private int minTableItems;
     private int maxTableItems;
     private LinkedList<TableEntry> tableEntries;
+    private LinkedList<CustomLootTableUtility> associatedTables;
 
     public PlayerMenuUtility(Player owner) {
         this.owner = owner;
@@ -73,5 +74,13 @@ public class PlayerMenuUtility {
 
     public void setTableEntries(LinkedList<TableEntry> tableEntries) {
         this.tableEntries = tableEntries;
+    }
+
+    public LinkedList<CustomLootTableUtility> getAssociatedTables() {
+        return associatedTables;
+    }
+
+    public void setAssociatedTables(LinkedList<CustomLootTableUtility> associatedTables) {
+        this.associatedTables = associatedTables;
     }
 }

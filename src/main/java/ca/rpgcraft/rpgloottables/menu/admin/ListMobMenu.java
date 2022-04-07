@@ -1,13 +1,16 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
-import ca.rpgcraft.rpgloottables.util.LootTableUtility;
+import ca.rpgcraft.rpgloottables.util.TableListUtility;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.VanillaLootTableUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.LinkedList;
 
 public class ListMobMenu extends PaginatedMenu {
     public ListMobMenu(PlayerMenuUtility playerMenuUtility, String inventoryName) {
@@ -35,7 +38,7 @@ public class ListMobMenu extends PaginatedMenu {
                 new MainMenu(playerMenuUtility).open();
                 break;
             case 50:
-                if(index + 1 >= LootTableUtility.getMobLootTables().length){
+                if(index + 1 >= TableListUtility.getMobLootTables().length){
                     playerMenuUtility.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
                     open();
                     break;
@@ -44,19 +47,32 @@ public class ListMobMenu extends PaginatedMenu {
                 open();
                 break;
             default:
-                if(!getInventory().getItem(rawSlot).getType().equals(Material.CHEST)){
+                if(!getInventory().getItem(rawSlot).getType().equals(Material.CHEST)
+                && !getInventory().getItem(rawSlot).getType().equals(Material.ENDER_CHEST)){
                     open();
                     break;
                 }
-                playerMenuUtility.setLootTableName(clickedItem.getItemMeta().getDisplayName());
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou chose &6" + clickedItem.getItemMeta().getDisplayName().replace("minecraft:", "") + "&a."));
-                break;
+                if(TableListUtility.getLoadedVanillaTables().containsKey(clickedItem.getItemMeta().getDisplayName())){
+                    playerMenuUtility.setLootTableName(clickedItem.getItemMeta().getDisplayName());
+                    playerMenuUtility.setEnabled(TableListUtility.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).isKeepVanillaLoot());
+                    playerMenuUtility.setAssociatedTables(TableListUtility.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).getAssociatedTableList());
+                    new EditVanillaTableMenu(playerMenuUtility).open();
+                    break;
+                }else{
+                    playerMenuUtility.setLootTableName(clickedItem.getItemMeta().getDisplayName());
+                    playerMenuUtility.setEnabled(true);
+                    playerMenuUtility.setAssociatedTables(new LinkedList<>());
+                    TableListUtility.getLoadedVanillaTables().put(playerMenuUtility.getLootTableName(), new VanillaLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
+                    new EditVanillaTableMenu(playerMenuUtility).open();
+                    break;
+                }
         }
     }
 
     @Override
     public Inventory getInventory() {
-        String[] vanillaMobTables = LootTableUtility.getMobLootTables();
+        String[] vanillaMobTables = TableListUtility.getMobLootTables();
 
         inventory.clear();
         addPaginatedMenuBorder();
@@ -65,8 +81,19 @@ public class ListMobMenu extends PaginatedMenu {
             index = getMaxItemsPerPage() * page + i;
             if(index >= vanillaMobTables.length) break;
             if(!vanillaMobTables[index].isBlank()){
-
-                inventory.addItem(createItem(Material.CHEST, vanillaMobTables[index]));
+                if(TableListUtility.getLoadedVanillaTables().containsKey(vanillaMobTables[index])){
+                    VanillaLootTableUtility vanillaLootTableUtility = TableListUtility.getLoadedVanillaTables().get(vanillaMobTables[index]);
+                    inventory.addItem(createItem(
+                            Material.ENDER_CHEST,
+                            vanillaLootTableUtility.getVanillaTableName(),
+                            ChatColor.translateAlternateColorCodes('&', "&eGenerate Vanilla Loot&7: " + vanillaLootTableUtility.isKeepVanillaLoot()),
+                            ChatColor.translateAlternateColorCodes('&', "&eAssociated Tables&7: " + vanillaLootTableUtility.getAssociatedTableList().size())
+                    ));
+                }else{
+                    inventory.addItem(createItem(
+                            Material.CHEST,
+                            vanillaMobTables[index]));
+                }
             }
         }
 

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
-import java.util.Random;
 
 public final class RPGLootTables extends JavaPlugin {
 
@@ -18,7 +17,6 @@ public final class RPGLootTables extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
 
         long startTime = System.currentTimeMillis();
@@ -31,7 +29,7 @@ public final class RPGLootTables extends JavaPlugin {
         getCommand("rl").setExecutor(mainMenuCommand);
 
         Bukkit.getPluginManager().registerEvents(new MenuListener(), this);
-        Bukkit.getPluginManager().registerEvents(new LootGenerateListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new LootGenerateListener(), this);
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eHello Minecraft!"));
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eTime Elapsed: &b" + (System.currentTimeMillis() - startTime) + " &ems"));
@@ -39,7 +37,6 @@ public final class RPGLootTables extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
         long startTime = System.currentTimeMillis();
 
         playerMenuUtilityMap = null;
