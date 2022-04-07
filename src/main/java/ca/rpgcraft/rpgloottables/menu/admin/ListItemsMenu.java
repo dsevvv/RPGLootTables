@@ -20,7 +20,9 @@ public class ListItemsMenu extends PaginatedMenu {
 
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
+        switch(rawSlot){
 
+        }
     }
 
     @Override
