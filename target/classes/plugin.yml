@@ -1,0 +1,15 @@
+name: RPGLootTables
+version: '1.0.0-ALPHA'
+main: ca.rpgcraft.rpgloottables.RPGLootTables
+api-version: 1.18
+authors: [ dsevvv ]
+description: Plugin that controls the loot tables for naturally generated chests.
+website: github.com/dsevvv/rpgloottables
+commands:
+  rpgloot:
+
+  rpgl:
+
+  rloot:
+
+  rl:
