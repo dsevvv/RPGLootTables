@@ -1,6 +1,5 @@
 package ca.rpgcraft.rpgloottables.listeners;
 
-import ca.rpgcraft.rpgloottables.RPGLootTables;
 import ca.rpgcraft.rpgloottables.util.CustomLootTableUtility;
 import ca.rpgcraft.rpgloottables.util.TableListUtility;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTableUtility;
@@ -27,8 +26,14 @@ public class LootGenerateListener implements Listener {
         VanillaLootTableUtility vanillaLootTableUtility = TableListUtility.getLoadedVanillaTables().get(e.getLootTable().toString());
         if(!vanillaLootTableUtility.isKeepVanillaLoot())
             e.setLoot(null);
+        for(CustomLootTableUtility customLootTableUtility : TableListUtility.getLoadedCustomTables().values()){
+            if(customLootTableUtility.isGlobal()){
+                CustomLootTableUtility clone = new CustomLootTableUtility(customLootTableUtility.getName(), customLootTableUtility.getTableEntries(), customLootTableUtility.isGlobal(), customLootTableUtility.getChance(), customLootTableUtility.getMinItems(), customLootTableUtility.getMaxItems());
+                clone.fillInventory(e.getInventoryHolder().getInventory(), new Random(), e.getLootContext());
+            }
+        }
         for(CustomLootTableUtility customLootTableUtility : vanillaLootTableUtility.getAssociatedTableList()){
-            CustomLootTableUtility clone = new CustomLootTableUtility(customLootTableUtility.getName(), customLootTableUtility.getTableEntries(), customLootTableUtility.isEnabled(), customLootTableUtility.getChance(), customLootTableUtility.getMinItems(), customLootTableUtility.getMaxItems());
+            CustomLootTableUtility clone = new CustomLootTableUtility(customLootTableUtility.getName(), customLootTableUtility.getTableEntries(), customLootTableUtility.isGlobal(), customLootTableUtility.getChance(), customLootTableUtility.getMinItems(), customLootTableUtility.getMaxItems());
             clone.fillInventory(e.getInventoryHolder().getInventory(), new Random(), e.getLootContext());
         }
     }
@@ -44,8 +49,14 @@ public class LootGenerateListener implements Listener {
             for(ItemStack drop : e.getDrops()){
                 drop.setType(Material.AIR);
             }
+        for(CustomLootTableUtility customLootTableUtility : TableListUtility.getLoadedCustomTables().values()){
+            if(customLootTableUtility.isGlobal()){
+                CustomLootTableUtility clone = new CustomLootTableUtility(customLootTableUtility.getName(), customLootTableUtility.getTableEntries(), customLootTableUtility.isGlobal(), customLootTableUtility.getChance(), customLootTableUtility.getMinItems(), customLootTableUtility.getMaxItems());
+                clone.fillInventory(tempInv, new Random(), new LootContext.Builder(e.getEntity().getLocation()).build());
+            }
+        }
         for(CustomLootTableUtility customLootTableUtility : vanillaLootTableUtility.getAssociatedTableList()){
-            CustomLootTableUtility clone = new CustomLootTableUtility(customLootTableUtility.getName(), customLootTableUtility.getTableEntries(), customLootTableUtility.isEnabled(), customLootTableUtility.getChance(), customLootTableUtility.getMinItems(), customLootTableUtility.getMaxItems());
+            CustomLootTableUtility clone = new CustomLootTableUtility(customLootTableUtility.getName(), customLootTableUtility.getTableEntries(), customLootTableUtility.isGlobal(), customLootTableUtility.getChance(), customLootTableUtility.getMinItems(), customLootTableUtility.getMaxItems());
             clone.fillInventory(tempInv, new Random(), new LootContext.Builder(e.getEntity().getLocation()).build());
         }
         for(ItemStack item : tempInv.getContents()){
