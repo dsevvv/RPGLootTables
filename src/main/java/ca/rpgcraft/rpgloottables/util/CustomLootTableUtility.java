@@ -15,7 +15,7 @@ public class CustomLootTableUtility implements LootTable {
     private String name;
     private LinkedList<TableEntry> tableEntries;
     private final LinkedList<TableEntry> entriesCopy;
-    private boolean isEnabled;
+    private boolean isGlobal;
     private double chance;
     private int minItems;
     private int maxItems;
@@ -36,7 +36,7 @@ public class CustomLootTableUtility implements LootTable {
         this.name = name;
         this.tableEntries = tableEntries;
         this.entriesCopy = (LinkedList<TableEntry>) tableEntries.clone();
-        this.isEnabled = isEnabled;
+        this.isGlobal = isEnabled;
         this.chance = chance;
         this.minItems = minItems;
         this.maxItems = maxItems;
@@ -112,12 +112,12 @@ public class CustomLootTableUtility implements LootTable {
         this.name = name;
     }
 
-    public boolean isEnabled() {
-        return isEnabled;
+    public boolean isGlobal() {
+        return isGlobal;
     }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+    public void setGlobal(boolean global) {
+        isGlobal = global;
     }
 
     public double getChance() {
