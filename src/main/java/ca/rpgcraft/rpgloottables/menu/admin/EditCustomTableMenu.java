@@ -157,7 +157,9 @@ public class EditCustomTableMenu extends Menu {
                                        ChatColor.YELLOW + WordUtils.capitalizeFully(whoClicked.getInventory().getItemInMainHand().getType().name().replace("_", " ")) : ChatColor.YELLOW + whoClicked.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
                                 e.setCancelled(true);
                                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', itemName + " &aadded to &6" + playerMenuUtility.getLootTableName() + "&a."));
-                                playerMenuUtility.getTableEntries().add(new TableEntry(whoClicked.getInventory().getItemInMainHand(), 1, 1, 1));
+                                ItemStack singleItem = whoClicked.getInventory().getItemInMainHand().clone();
+                                singleItem.setAmount(1);
+                                playerMenuUtility.getTableEntries().add(new TableEntry(singleItem, 1, 1, 1));
                                 open();
                                 HandlerList.unregisterAll(this);
                                 break;
