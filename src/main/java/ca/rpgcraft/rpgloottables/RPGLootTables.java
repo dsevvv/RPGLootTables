@@ -20,6 +20,8 @@ public final class RPGLootTables extends JavaPlugin {
      */
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
 
         long startTime = System.currentTimeMillis();
