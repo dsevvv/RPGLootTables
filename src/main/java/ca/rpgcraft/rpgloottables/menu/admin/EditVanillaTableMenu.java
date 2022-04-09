@@ -41,7 +41,7 @@ public class EditVanillaTableMenu extends Menu {
                 break;
             case 16:
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSaved &6" + playerMenuUtility.getLootTableName().replace("minecraft:", "") + "&a."));
-                if(!playerMenuUtility.isEnabled() || playerMenuUtility.getAssociatedTables().size() > 0)
+                if(!playerMenuUtility.isEnabled() || playerMenuUtility.getAssociatedTables().size() > 0) //we are only saving to memory if defaults have been modified
                     TableListUtility.getLoadedVanillaTables().put(playerMenuUtility.getLootTableName(), new VanillaLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
                 if(playerMenuUtility.getLootTableName().replace("minecraft:", "").contains("chests")){
                     new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
