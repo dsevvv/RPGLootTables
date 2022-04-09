@@ -63,7 +63,6 @@ public class ListMobMenu extends PaginatedMenu {
                     playerMenuUtility.setLootTableName(clickedItem.getItemMeta().getDisplayName());
                     playerMenuUtility.setEnabled(true);
                     playerMenuUtility.setAssociatedTables(new LinkedList<>());
-                    TableListUtility.getLoadedVanillaTables().put(playerMenuUtility.getLootTableName(), new VanillaLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
                     new EditVanillaTableMenu(playerMenuUtility).open();
                     break;
                 }

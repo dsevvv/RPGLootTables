@@ -4,6 +4,8 @@ import ca.rpgcraft.rpgloottables.command.admin.MainMenuCommand;
 import ca.rpgcraft.rpgloottables.listeners.LootGenerateListener;
 import ca.rpgcraft.rpgloottables.listeners.MenuListener;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.TableListUtility;
+import ca.rpgcraft.rpgloottables.util.VanillaLootTableUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -65,5 +67,14 @@ public final class RPGLootTables extends JavaPlugin {
             playerMenuUtilityMap.put(p, new PlayerMenuUtility(p));
 
         return playerMenuUtilityMap.get(p);
+    }
+
+    private void test(){
+        HashMap<String, VanillaLootTableUtility> vanillaTablesMap = TableListUtility.getLoadedVanillaTables();
+        vanillaTablesMap.keySet().forEach(key -> {
+            getLogger().info(String.format("\nName: %s\nKeep Vanilla Loot: %s", vanillaTablesMap.get(key).getVanillaTableName(), vanillaTablesMap.get(key).isKeepVanillaLoot()));
+            getLogger().info("Associated Tables:\n");
+            vanillaTablesMap.get(key).getAssociatedTableList().forEach(customLootTableUtility -> getLogger().info(customLootTableUtility.getName() + "\n"));
+        });
     }
 }

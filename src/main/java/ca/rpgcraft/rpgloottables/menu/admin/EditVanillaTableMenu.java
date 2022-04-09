@@ -41,7 +41,8 @@ public class EditVanillaTableMenu extends Menu {
                 break;
             case 16:
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSaved &6" + playerMenuUtility.getLootTableName().replace("minecraft:", "") + "&a."));
-                TableListUtility.getLoadedVanillaTables().put(playerMenuUtility.getLootTableName(), new VanillaLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
+                if(!playerMenuUtility.isEnabled() || playerMenuUtility.getAssociatedTables().size() > 0)
+                    TableListUtility.getLoadedVanillaTables().put(playerMenuUtility.getLootTableName(), new VanillaLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
                 if(playerMenuUtility.getLootTableName().replace("minecraft:", "").contains("chests")){
                     new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
                 }else{

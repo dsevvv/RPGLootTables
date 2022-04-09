@@ -58,14 +58,12 @@ public class ListChestMenu extends PaginatedMenu {
                     playerMenuUtility.setLootTableName(clickedItem.getItemMeta().getDisplayName());
                     playerMenuUtility.setEnabled(TableListUtility.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).isKeepVanillaLoot());
                     playerMenuUtility.setAssociatedTables(TableListUtility.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).getAssociatedTableList());
-                    TableListUtility.getLoadedVanillaTables().put(clickedItem.getItemMeta().getDisplayName(), new VanillaLootTableUtility(clickedItem.getItemMeta().getDisplayName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
                     new EditVanillaTableMenu(playerMenuUtility).open();
                     break;
                 }else{
                     playerMenuUtility.setLootTableName(clickedItem.getItemMeta().getDisplayName());
                     playerMenuUtility.setEnabled(true);
                     playerMenuUtility.setAssociatedTables(new LinkedList<>());
-                    TableListUtility.getLoadedVanillaTables().put(clickedItem.getItemMeta().getDisplayName(), new VanillaLootTableUtility(clickedItem.getItemMeta().getDisplayName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
                     new EditVanillaTableMenu(playerMenuUtility).open();
                     break;
                 }
