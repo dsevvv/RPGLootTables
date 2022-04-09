@@ -45,18 +45,16 @@ public class EditVanillaTableMenu extends Menu {
                     TableListUtility.getLoadedVanillaTables().put(playerMenuUtility.getLootTableName(), new VanillaLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
                 else
                     TableListUtility.getLoadedVanillaTables().remove(playerMenuUtility.getLootTableName());
-                if(playerMenuUtility.getLootTableName().replace("minecraft:", "").contains("chests")){
+                if(playerMenuUtility.getLootTableName().replace("minecraft:", "").contains("chests"))
                     new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
-                }else{
+                else
                     new ListMobMenu(playerMenuUtility, "     &0Vanilla Mob Loot Tables").open();
-                }
                 break;
             case 22:
-                if(playerMenuUtility.getLootTableName().replace("minecraft:", "").contains("chests")){
+                if(playerMenuUtility.getLootTableName().replace("minecraft:", "").contains("chests"))
                     new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
-                }else{
+                else
                     new ListMobMenu(playerMenuUtility, "     &0Vanilla Mob Loot Tables").open();
-                }
                 break;
             default:
                 open();
