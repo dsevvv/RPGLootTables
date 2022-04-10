@@ -26,11 +26,10 @@ public class EditVanillaTableMenu extends Menu {
         switch (rawSlot){
             case 10:
                 playerMenuUtility.setEnabled(!playerMenuUtility.isEnabled());
-                if(playerMenuUtility.isEnabled()){
+                if(playerMenuUtility.isEnabled())
                     whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Vanilla Loot &aon&e."));
-                }else{
+                else
                     whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Vanilla Loot &coff&e."));
-                }
                 open();
                 break;
             case 12:
