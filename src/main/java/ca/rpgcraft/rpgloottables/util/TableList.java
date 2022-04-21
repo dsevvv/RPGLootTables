@@ -6,9 +6,9 @@ import java.util.HashMap;
  * Storage class for loaded VanillaTable objects and CustomTable objects.
  * Also holds all the raw names of the vanilla tables.
  */
-public class TableListUtility {
-    private static final HashMap<String, CustomLootTableUtility> loadedCustomTables = new HashMap<>();
-    private static final HashMap<String, VanillaLootTableUtility> loadedVanillaTables = new HashMap<>();
+public class TableList {
+    private static final HashMap<String, CustomLootTable> loadedCustomTables = new HashMap<>();
+    private static final HashMap<String, VanillaLootTable> loadedVanillaTables = new HashMap<>();
 
     private static String[] mobLootTables = {
             "minecraft:entities/armor_stand",
@@ -140,9 +140,9 @@ public class TableListUtility {
         return mobLootTables;
     }
 
-    public static HashMap<String, CustomLootTableUtility> getLoadedCustomTables() {
+    public static HashMap<String, CustomLootTable> getLoadedCustomTables() {
         return loadedCustomTables;
     }
 
-    public static HashMap<String, VanillaLootTableUtility> getLoadedVanillaTables(){ return loadedVanillaTables; }
+    public static HashMap<String, VanillaLootTable> getLoadedVanillaTables(){ return loadedVanillaTables; }
 }

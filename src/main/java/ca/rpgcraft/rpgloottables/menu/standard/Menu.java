@@ -1,6 +1,6 @@
 package ca.rpgcraft.rpgloottables.menu.standard;
 
-import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.PlayerMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,14 +13,14 @@ import java.util.Arrays;
 
 public abstract class Menu implements InventoryHolder {
 
-    protected PlayerMenuUtility playerMenuUtility;
+    protected PlayerMenu playerMenu;
 
     protected static ItemStack BLANK_ITEM;
     protected static ItemStack BACK_ITEM;
     protected static ItemStack CLOSE_ITEM;
 
-    public Menu(PlayerMenuUtility playerMenuUtility){
-        this.playerMenuUtility = playerMenuUtility;
+    public Menu(PlayerMenu playerMenu){
+        this.playerMenu = playerMenu;
 
         ItemStack blank = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
         ItemMeta blankMeta = blank.getItemMeta();
@@ -52,7 +52,7 @@ public abstract class Menu implements InventoryHolder {
      * Opens the menu for the owner of the associated PlayerMenuUtility
      */
     public void open(){
-        playerMenuUtility.getOwner().openInventory(getInventory());
+        playerMenu.getOwner().openInventory(getInventory());
     }
 
     /**

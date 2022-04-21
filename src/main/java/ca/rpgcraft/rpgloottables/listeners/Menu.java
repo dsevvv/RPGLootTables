@@ -9,11 +9,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 /**
  * Listens for Menu clicks.
  */
-public class MenuListener implements Listener {
+public class Menu implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e){
-        if(!(e.getInventory().getHolder() instanceof Menu menu)) return;
+        if(!(e.getInventory().getHolder() instanceof ca.rpgcraft.rpgloottables.menu.standard.Menu menu)) return;
         if(e.getCurrentItem() == null) return;
 
         e.setCancelled(true);

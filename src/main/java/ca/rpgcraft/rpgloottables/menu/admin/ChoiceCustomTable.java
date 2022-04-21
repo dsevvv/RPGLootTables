@@ -1,8 +1,8 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
-import ca.rpgcraft.rpgloottables.util.TableListUtility;
-import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.TableList;
+import ca.rpgcraft.rpgloottables.util.PlayerMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,28 +14,28 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.LinkedList;
 
-public class ChoiceCustomTableMenu extends Menu {
-    public ChoiceCustomTableMenu(PlayerMenuUtility playerMenuUtility) {
-        super(playerMenuUtility);
+public class ChoiceCustomTable extends Menu {
+    public ChoiceCustomTable(PlayerMenu playerMenu) {
+        super(playerMenu);
     }
 
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
             case 12:
-                playerMenuUtility.setLootTableName("Table " + (TableListUtility.getLoadedCustomTables().size() + 1));
-                playerMenuUtility.setEnabled(false);
-                playerMenuUtility.setChance(100);
-                playerMenuUtility.setMaxTableItems(1);
-                playerMenuUtility.setMinTableItems(1);
-                playerMenuUtility.setTableEntries(new LinkedList<>());
-                new EditCustomTableMenu(playerMenuUtility).open();
+                playerMenu.setLootTableName("Table " + (TableList.getLoadedCustomTables().size() + 1));
+                playerMenu.setEnabled(false);
+                playerMenu.setChance(100);
+                playerMenu.setMaxTableItems(1);
+                playerMenu.setMinTableItems(1);
+                playerMenu.setTableEntries(new LinkedList<>());
+                new EditCustomTable(playerMenu).open();
                 break;
             case 14:
-                new ListEditCustomTableMenu(playerMenuUtility, ChatColor.translateAlternateColorCodes('&', "     &0Edit Custom Loot Tables")).open();
+                new ListEditCustomTable(playerMenu, ChatColor.translateAlternateColorCodes('&', "     &0Edit Custom Loot Tables")).open();
                 break;
             case 22:
-                new MainMenu(playerMenuUtility).open();
+                new MainMenu(playerMenu).open();
                 break;
             default:
                 open();

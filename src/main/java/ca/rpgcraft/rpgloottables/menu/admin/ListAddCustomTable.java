@@ -2,8 +2,8 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
-import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
-import ca.rpgcraft.rpgloottables.util.TableListUtility;
+import ca.rpgcraft.rpgloottables.util.PlayerMenu;
+import ca.rpgcraft.rpgloottables.util.TableList;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,9 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ListRemoveCustomTableMenu extends PaginatedMenu {
-    public ListRemoveCustomTableMenu(PlayerMenuUtility playerMenuUtility, String inventoryName) {
-        super(playerMenuUtility, inventoryName);
+public class ListAddCustomTable extends PaginatedMenu {
+    public ListAddCustomTable(PlayerMenu playerMenu, String inventoryName) {
+        super(playerMenu, inventoryName);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ListRemoveCustomTableMenu extends PaginatedMenu {
         switch (rawSlot){
             case 48:
                 if(page == 0){
-                    playerMenuUtility.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
+                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
                     open();
                     break;
                 }
@@ -36,11 +36,11 @@ public class ListRemoveCustomTableMenu extends PaginatedMenu {
                 open();
                 break;
             case 49:
-                new EditVanillaTableMenu(playerMenuUtility).open();
+                new EditVanillaTable(playerMenu).open();
                 break;
             case 50:
-                if(index + 1 >= TableListUtility.getLoadedCustomTables().size()){
-                    playerMenuUtility.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
+                if(index + 1 >= TableList.getLoadedCustomTables().size()){
+                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
                     open();
                     break;
                 }
@@ -52,9 +52,9 @@ public class ListRemoveCustomTableMenu extends PaginatedMenu {
                     open();
                     break;
                 }
-                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou removed &6" + clickedItem.getItemMeta().getDisplayName() + " &afrom &6" + playerMenuUtility.getLootTableName().replace("minecraft:", "") + "&a."));
-                playerMenuUtility.getAssociatedTables().remove(TableListUtility.getLoadedCustomTables().get(clickedItem.getItemMeta().getDisplayName()));
-                new EditVanillaTableMenu(playerMenuUtility).open();
+                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou added &6" + clickedItem.getItemMeta().getDisplayName() + " &ato &6" + playerMenu.getLootTableName().replace("minecraft:", "") + "&a."));
+                playerMenu.getAssociatedTables().add(TableList.getLoadedCustomTables().get(clickedItem.getItemMeta().getDisplayName()));
+                new EditVanillaTable(playerMenu).open();
                 break;
         }
     }
@@ -67,7 +67,7 @@ public class ListRemoveCustomTableMenu extends PaginatedMenu {
         List<Integer> customTableMinItems = new LinkedList<>();
         List<Integer> customTableMaxItems = new LinkedList<>();
         List<LinkedList<TableEntry>> customTableEntries = new LinkedList<>();
-        TableListUtility.getLoadedVanillaTables().get(playerMenuUtility.getLootTableName()).getAssociatedTableList().forEach((customLootTableUtility) -> {
+        TableList.getLoadedCustomTables().forEach((name, customLootTableUtility) -> {
             customTableNames.add(customLootTableUtility.getName());
             customTableGlobals.add(customLootTableUtility.isGlobal());
             customTableChances.add(customLootTableUtility.getChance());

@@ -1,6 +1,6 @@
 package ca.rpgcraft.rpgloottables.menu.standard;
 
-import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.PlayerMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,8 +14,8 @@ public abstract class PaginatedMenu extends Menu {
     protected int index = 0;
     protected Inventory inventory;
 
-    public PaginatedMenu(PlayerMenuUtility playerMenuUtility, String inventoryName) {
-        super(playerMenuUtility);
+    public PaginatedMenu(PlayerMenu playerMenu, String inventoryName) {
+        super(playerMenu);
         inventory = Bukkit.createInventory(this, 54, ChatColor.translateAlternateColorCodes('&', inventoryName));
     }
 

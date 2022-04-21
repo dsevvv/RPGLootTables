@@ -2,10 +2,8 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
-import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
-import ca.rpgcraft.rpgloottables.util.TableListUtility;
+import ca.rpgcraft.rpgloottables.util.PlayerMenu;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -15,9 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ListItemsMenu extends PaginatedMenu {
-    public ListItemsMenu(PlayerMenuUtility playerMenuUtility, String inventoryName) {
-        super(playerMenuUtility, inventoryName);
+public class ListItems extends PaginatedMenu {
+    public ListItems(PlayerMenu playerMenu, String inventoryName) {
+        super(playerMenu, inventoryName);
     }
 
     @Override
@@ -25,7 +23,7 @@ public class ListItemsMenu extends PaginatedMenu {
         switch(rawSlot){
             case 48:
                 if(page == 0){
-                    playerMenuUtility.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
+                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
                     open();
                     break;
                 }
@@ -33,11 +31,11 @@ public class ListItemsMenu extends PaginatedMenu {
                 open();
                 break;
             case 49:
-                new EditCustomTableMenu(playerMenuUtility).open();
+                new EditCustomTable(playerMenu).open();
                 break;
             case 50:
-                if(index + 1 >= playerMenuUtility.getTableEntries().size()){
-                    playerMenuUtility.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
+                if(index + 1 >= playerMenu.getTableEntries().size()){
+                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
                     open();
                     break;
                 }
@@ -55,19 +53,19 @@ public class ListItemsMenu extends PaginatedMenu {
                     index -= 2;
                 if(rawSlot >= 37)
                     index -= 2;
-                new EditTableEntryMenu(playerMenuUtility,
+                new EditTableEntry(playerMenu,
                                        index,
-                                       playerMenuUtility.getTableEntries().get(index).getItemStack(),
-                                       playerMenuUtility.getTableEntries().get(index).getWeight(),
-                                       playerMenuUtility.getTableEntries().get(index).getMinAmt(),
-                                       playerMenuUtility.getTableEntries().get(index).getMaxAmt()).open();
+                                       playerMenu.getTableEntries().get(index).getItemStack(),
+                                       playerMenu.getTableEntries().get(index).getWeight(),
+                                       playerMenu.getTableEntries().get(index).getMinAmt(),
+                                       playerMenu.getTableEntries().get(index).getMaxAmt()).open();
                 break;
         }
     }
 
     @Override
     public Inventory getInventory() {
-        LinkedList<TableEntry> tableEntries = playerMenuUtility.getTableEntries();
+        LinkedList<TableEntry> tableEntries = playerMenu.getTableEntries();
 
         inventory.clear();
         addPaginatedMenuBorder();
