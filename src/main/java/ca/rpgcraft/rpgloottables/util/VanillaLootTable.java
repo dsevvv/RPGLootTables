@@ -14,6 +14,7 @@ public class VanillaLootTable {
      * @param associatedTableList List of custom tables that will roll along with this vanilla table
      * @param keepVanillaLoot if false the loot determined by Minecraft will not generate
      */
+
     public VanillaLootTable(String vanillaTableName, LinkedList<CustomLootTable> associatedTableList, boolean keepVanillaLoot){
         this.vanillaTableName = vanillaTableName;
         this.associatedTableList = associatedTableList;
