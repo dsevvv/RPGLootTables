@@ -1,25 +1,28 @@
 package ca.rpgcraft.rpgloottables.database;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
+import ca.rpgcraft.rpgloottables.util.CustomLootTable;
 import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
 import java.io.File;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Database {
 
     private final String path = "plugins/RPGLootTables/rpgloot.db";
+    private Connection conn;
 
     //Creates a db file called rpgloot in the database file.
     public void createDatabase() throws SQLException {
 
         File pathFile = new File(path);
+
+        RPGLootTables plugin = RPGLootTables.getPlugin(RPGLootTables.class);
 
         //first checks if there is already a db file in the database folder or not
         if(!pathFile.isFile()){
@@ -28,30 +31,31 @@ public class Database {
             String vanilla_custom_table = createVanillaCustomLootTable();
             String item_table = createItemsTable();
             try{
-                Connection conn = DriverManager.getConnection(path);
-                RPGLootTables.getPlugin(RPGLootTables.class).getLogger().warning("rpgloot.db created");
+                conn = DriverManager.getConnection("jdbc:sqlite:" + path);
+                plugin.getLogger().warning("rpgloot.db created");
                 Statement stmt = conn.createStatement();
                 stmt.execute(vanilla_table);
-                RPGLootTables.getPlugin(RPGLootTables.class).getLogger().warning("vanilla_table created");
+                plugin.getLogger().warning("vanilla_table created");
                 stmt.execute(custom_table);
-                RPGLootTables.getPlugin(RPGLootTables.class).getLogger().warning("custom_table created");
+                plugin.getLogger().warning("custom_table created");
                 stmt.execute(vanilla_custom_table);
-                RPGLootTables.getPlugin(RPGLootTables.class).getLogger().warning("vanilla_custom table created");
+                plugin.getLogger().warning("vanilla_custom table created");
                 stmt.execute(item_table);
-                RPGLootTables.getPlugin(RPGLootTables.class).getLogger().warning("item_table created");
+                plugin.getLogger().warning("item_table created");
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                plugin.getLogger().severe(e.getMessage());
             }
         }
         else{
-            RPGLootTables.getPlugin(RPGLootTables.class).getLogger().warning("Database file already exists");
+            plugin.getLogger().warning("Database file already exists");
         }
     }
 
     private String createVanillaTable() {
         return "CREATE TABLE IF NOT EXISTS VanillaLootTable (\n"
                 + "vanilla_id text PRIMARY KEY, \n"
-                + "enabled integer NOT NULL \n"
+                + "enabled integer NOT NULL, \n"
+                + "custom_names text NULL \n"
                 + ");";
     }
     private String createCustomLootTable() {
@@ -69,7 +73,7 @@ public class Database {
                 + "custom_id text NOT NULL, \n"
                 + "PRIMARY KEY (vanilla_id, custom_id),\n"
                 + "FOREIGN KEY (vanilla_id) REFERENCES VanillaLootTable (vanilla_id),\n"
-                + "FOREIGN KEY (custom_id) REFERENCES CustomLootTable (custom_id),\n"
+                + "FOREIGN KEY (custom_id) REFERENCES CustomLootTable (custom_id)\n"
                 + ");";
     }
     private String createItemsTable() {
@@ -79,8 +83,35 @@ public class Database {
                 + "minAmount integer NOT NULL,\n"
                 + "maxAmount integer NOT NULL,\n"
                 + "itemStack text NOT NULL,\n"
-                + "FOREIGN KEY (custom_id) REFERENCES CustomLootTable (custom_id),\n"
+                + "FOREIGN KEY (customID) REFERENCES CustomLootTable (custom_id)\n"
                 + ");";
+    }
+
+    public void insertVanillaTables(){
+        HashMap<String, VanillaLootTable> loadedVanillaTables = TableList.getLoadedVanillaTables();
+        Set<String> keys = loadedVanillaTables.keySet();
+
+        for(String key : keys){
+            VanillaLootTable vanillaLootTable = loadedVanillaTables.get(key);
+            String sql = "INSERT INTO VanillaLootTable (vanilla_id,enabled,custom_names) VALUES(?,?,?)";
+
+            try{
+                PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                String name = vanillaLootTable.getVanillaTableName();
+                int boolInt = vanillaLootTable.isKeepVanillaLoot() ? 1 : 0;
+                StringBuilder innerBuilder = new StringBuilder();
+                for(CustomLootTable customLootTable : vanillaLootTable.getAssociatedTableList()){
+                    innerBuilder.append(customLootTable.getName() + "|");
+                }
+                String namesStr = innerBuilder.toString();
+                preparedStatement.setString(1, name);
+                preparedStatement.setInt(2, boolInt);
+                preparedStatement.setString(3, namesStr);
+                preparedStatement.executeUpdate();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     public void testMethod(){

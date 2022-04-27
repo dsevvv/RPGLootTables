@@ -1,6 +1,7 @@
 package ca.rpgcraft.rpgloottables;
 
 import ca.rpgcraft.rpgloottables.command.admin.MainMenu;
+import ca.rpgcraft.rpgloottables.database.Database;
 import ca.rpgcraft.rpgloottables.listeners.LootGenerate;
 import ca.rpgcraft.rpgloottables.listeners.Menu;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
@@ -11,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public final class RPGLootTables extends JavaPlugin {
@@ -25,6 +27,14 @@ public final class RPGLootTables extends JavaPlugin {
         saveDefaultConfig();
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
+
+        Database db = new Database();
+
+        try{
+            db.createDatabase();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
 
         long startTime = System.currentTimeMillis();
         MainMenu mainMenu = new MainMenu();
