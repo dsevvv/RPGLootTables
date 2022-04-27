@@ -2,10 +2,10 @@ package ca.rpgcraft.rpgloottables.util;
 
 import java.util.LinkedList;
 
-public class VanillaLootTableUtility {
+public class VanillaLootTable {
 
     private final String vanillaTableName;
-    private LinkedList<CustomLootTableUtility> associatedTableList;
+    private LinkedList<CustomLootTable> associatedTableList;
     private boolean keepVanillaLoot;
 
     /**
@@ -14,7 +14,7 @@ public class VanillaLootTableUtility {
      * @param associatedTableList List of custom tables that will roll along with this vanilla table
      * @param keepVanillaLoot if false the loot determined by Minecraft will not generate
      */
-    public VanillaLootTableUtility(String vanillaTableName, LinkedList<CustomLootTableUtility> associatedTableList, boolean keepVanillaLoot){
+    public VanillaLootTable(String vanillaTableName, LinkedList<CustomLootTable> associatedTableList, boolean keepVanillaLoot){
         this.vanillaTableName = vanillaTableName;
         this.associatedTableList = associatedTableList;
         this.keepVanillaLoot = keepVanillaLoot;
@@ -24,11 +24,11 @@ public class VanillaLootTableUtility {
         return vanillaTableName;
     }
 
-    public LinkedList<CustomLootTableUtility> getAssociatedTableList() {
+    public LinkedList<CustomLootTable> getAssociatedTableList() {
         return associatedTableList;
     }
 
-    public void setAssociatedTableList(LinkedList<CustomLootTableUtility> associatedTableList) {
+    public void setAssociatedTableList(LinkedList<CustomLootTable> associatedTableList) {
         this.associatedTableList = associatedTableList;
     }
 

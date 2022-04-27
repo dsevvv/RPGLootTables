@@ -3,7 +3,7 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 import ca.rpgcraft.rpgloottables.RPGLootTables;
 import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
-import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.apache.commons.lang.WordUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -15,7 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class EditTableEntryMenu extends Menu {
+public class EditTableEntry extends Menu {
 
     private ItemStack itemStack;
     private final int index;
@@ -23,8 +23,8 @@ public class EditTableEntryMenu extends Menu {
     private int min;
     private int max;
 
-    public EditTableEntryMenu(PlayerMenuUtility playerMenuUtility, int index, ItemStack itemStack, int weight, int min, int max) {
-        super(playerMenuUtility);
+    public EditTableEntry(PlayerMenuManager playerMenuManager, int index, ItemStack itemStack, int weight, int min, int max) {
+        super(playerMenuManager);
         this.index = index;
         this.itemStack = itemStack;
         this.weight = weight;
@@ -112,11 +112,11 @@ public class EditTableEntryMenu extends Menu {
                         .open(whoClicked);
                 break;
             case 16:
-                playerMenuUtility.getTableEntries().set(index, new TableEntry(itemStack, weight, min, max));
-                new EditCustomTableMenu(playerMenuUtility).open();
+                playerMenuManager.getTableEntries().set(index, new TableEntry(itemStack, weight, min, max));
+                new EditCustomTable(playerMenuManager).open();
                 break;
             case 22:
-                new EditCustomTableMenu(playerMenuUtility).open();
+                new EditCustomTable(playerMenuManager).open();
                 break;
         }
     }

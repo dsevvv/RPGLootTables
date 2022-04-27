@@ -10,7 +10,7 @@ import org.bukkit.loot.LootTable;
 
 import java.util.*;
 
-public class CustomLootTableUtility implements LootTable {
+public class CustomLootTable implements LootTable {
 
     private String name;
     private LinkedList<TableEntry> tableEntries;
@@ -32,7 +32,7 @@ public class CustomLootTableUtility implements LootTable {
      * @param minItems int minimum amount of items that can generate from this table
      * @param maxItems int maximum amount of items that can generate from this table
      */
-    public CustomLootTableUtility(String name, LinkedList<TableEntry> tableEntries, boolean isEnabled, double chance, int minItems, int maxItems){
+    public CustomLootTable(String name, LinkedList<TableEntry> tableEntries, boolean isEnabled, double chance, int minItems, int maxItems){
         this.name = name;
         this.tableEntries = tableEntries;
         this.entriesCopy = (LinkedList<TableEntry>) tableEntries.clone();

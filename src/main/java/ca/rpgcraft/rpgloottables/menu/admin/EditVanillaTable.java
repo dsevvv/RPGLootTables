@@ -1,9 +1,9 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
-import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
-import ca.rpgcraft.rpgloottables.util.TableListUtility;
-import ca.rpgcraft.rpgloottables.util.VanillaLootTableUtility;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
+import ca.rpgcraft.rpgloottables.util.TableList;
+import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,44 +16,44 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditVanillaTableMenu extends Menu {
-    public EditVanillaTableMenu(PlayerMenuUtility playerMenuUtility) {
-        super(playerMenuUtility);
+public class EditVanillaTable extends Menu {
+    public EditVanillaTable(PlayerMenuManager playerMenuManager) {
+        super(playerMenuManager);
     }
 
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
             case 10:
-                playerMenuUtility.setEnabled(!playerMenuUtility.isEnabled());
-                if(playerMenuUtility.isEnabled()){
+                playerMenuManager.setEnabled(!playerMenuManager.isEnabled());
+                if(playerMenuManager.isEnabled())
                     whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Vanilla Loot &aon&e."));
-                }else{
+                else
                     whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Vanilla Loot &coff&e."));
-                }
                 open();
                 break;
             case 12:
-                new ListAddCustomTableMenu(playerMenuUtility, "&0         Add Custom Table").open();
+                new ListAddCustomTable(playerMenuManager, "&0         Add Custom Table").open();
                 break;
             case 14:
-                new ListRemoveCustomTableMenu(playerMenuUtility, "&0       Remove Custom Table").open();
+                new ListRemoveCustomTable(playerMenuManager, "&0       Remove Custom Table").open();
                 break;
             case 16:
-                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSaved &6" + playerMenuUtility.getLootTableName().replace("minecraft:", "") + "&a."));
-                TableListUtility.getLoadedVanillaTables().put(playerMenuUtility.getLootTableName(), new VanillaLootTableUtility(playerMenuUtility.getLootTableName(), playerMenuUtility.getAssociatedTables(), playerMenuUtility.isEnabled()));
-                if(playerMenuUtility.getLootTableName().replace("minecraft:", "").contains("chests")){
-                    new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
-                }else{
-                    new ListMobMenu(playerMenuUtility, "     &0Vanilla Mob Loot Tables").open();
-                }
+                whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSaved &6" + playerMenuManager.getLootTableName().replace("minecraft:", "") + "&a."));
+                if(!playerMenuManager.isEnabled() || playerMenuManager.getAssociatedTables().size() > 0) //we are only saving to memory if defaults have been modified
+                    TableList.getLoadedVanillaTables().put(playerMenuManager.getLootTableName(), new VanillaLootTable(playerMenuManager.getLootTableName(), playerMenuManager.getAssociatedTables(), playerMenuManager.isEnabled()));
+                else
+                    TableList.getLoadedVanillaTables().remove(playerMenuManager.getLootTableName());
+                if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("chests"))
+                    new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
+                else
+                    new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
                 break;
             case 22:
-                if(playerMenuUtility.getLootTableName().replace("minecraft:", "").contains("chests")){
-                    new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
-                }else{
-                    new ListMobMenu(playerMenuUtility, "     &0Vanilla Mob Loot Tables").open();
-                }
+                if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("chests"))
+                    new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
+                else
+                    new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
                 break;
             default:
                 open();
@@ -63,7 +63,7 @@ public class EditVanillaTableMenu extends Menu {
 
     @Override
     public Inventory getInventory() {
-        Inventory inv = Bukkit.createInventory(this, InventoryType.CHEST, ChatColor.translateAlternateColorCodes('&', "&0Edit " + playerMenuUtility.getLootTableName().replace("minecraft:", "")));
+        Inventory inv = Bukkit.createInventory(this, InventoryType.CHEST, ChatColor.translateAlternateColorCodes('&', "&0Edit " + playerMenuManager.getLootTableName().replace("minecraft:", "")));
 
         addMenuBorderSmall(inv, false);
 
@@ -86,7 +86,7 @@ public class EditVanillaTableMenu extends Menu {
 
     private ItemStack toggleGlobalStatus(){
         ItemStack itemStack = new ItemStack(Material.STONE);
-        if(playerMenuUtility.isEnabled()){
+        if(playerMenuManager.isEnabled()){
             ItemMeta newMeta = itemStack.getItemMeta();
             List<String> newLore = new ArrayList<>();
             newLore.add(ChatColor.translateAlternateColorCodes('&', "&7Will this table generate"));

@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
 
-public class PlayerMenuUtility {
+public class PlayerMenuManager {
 
     private final Player owner;
     private String lootTableName;
@@ -14,14 +14,14 @@ public class PlayerMenuUtility {
     private int minTableItems;
     private int maxTableItems;
     private LinkedList<TableEntry> tableEntries;
-    private LinkedList<CustomLootTableUtility> associatedTables;
+    private LinkedList<CustomLootTable> associatedTables;
 
     /**
      * Creates an object that will store information for the player while they are navigating the menu.
      * Input data will be read from this object and saved to the appropriate locations.
      * @param owner Player that owns this instance.
      */
-    public PlayerMenuUtility(Player owner) {
+    public PlayerMenuManager(Player owner) {
         this.owner = owner;
     }
 
@@ -77,11 +77,11 @@ public class PlayerMenuUtility {
         this.tableEntries = tableEntries;
     }
 
-    public LinkedList<CustomLootTableUtility> getAssociatedTables() {
+    public LinkedList<CustomLootTable> getAssociatedTables() {
         return associatedTables;
     }
 
-    public void setAssociatedTables(LinkedList<CustomLootTableUtility> associatedTables) {
+    public void setAssociatedTables(LinkedList<CustomLootTable> associatedTables) {
         this.associatedTables = associatedTables;
     }
 }

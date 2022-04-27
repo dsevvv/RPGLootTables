@@ -2,7 +2,7 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
-import ca.rpgcraft.rpgloottables.util.PlayerMenuUtility;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,16 +14,16 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class MainMenu extends Menu {
-    public MainMenu(PlayerMenuUtility playerMenuUtility) {
-        super(playerMenuUtility);
+    public MainMenu(PlayerMenuManager playerMenuManager) {
+        super(playerMenuManager);
     }
 
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
-            case 11 -> new ListChestMenu(playerMenuUtility, "    &0Vanilla Chest Loot Tables").open();
-            case 13 -> new ListMobMenu(playerMenuUtility, "     &0Vanilla Mob Loot Tables").open();
-            case 15 -> new ChoiceCustomTableMenu(playerMenuUtility).open();
+            case 11 -> new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
+            case 13 -> new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
+            case 15 -> new ChoiceCustomTable(playerMenuManager).open();
             case 22 -> new BukkitRunnable() {
                 @Override
                 public void run() {
