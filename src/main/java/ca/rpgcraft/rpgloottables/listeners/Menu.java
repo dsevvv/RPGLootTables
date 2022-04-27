@@ -1,6 +1,5 @@
 package ca.rpgcraft.rpgloottables.listeners;
 
-import ca.rpgcraft.rpgloottables.menu.standard.Menu;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

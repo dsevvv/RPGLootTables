@@ -2,7 +2,7 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
-import ca.rpgcraft.rpgloottables.util.PlayerMenu;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -14,8 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ListItems extends PaginatedMenu {
-    public ListItems(PlayerMenu playerMenu, String inventoryName) {
-        super(playerMenu, inventoryName);
+    public ListItems(PlayerMenuManager playerMenuManager, String inventoryName) {
+        super(playerMenuManager, inventoryName);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class ListItems extends PaginatedMenu {
         switch(rawSlot){
             case 48:
                 if(page == 0){
-                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
+                    playerMenuManager.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
                     open();
                     break;
                 }
@@ -31,11 +31,11 @@ public class ListItems extends PaginatedMenu {
                 open();
                 break;
             case 49:
-                new EditCustomTable(playerMenu).open();
+                new EditCustomTable(playerMenuManager).open();
                 break;
             case 50:
-                if(index + 1 >= playerMenu.getTableEntries().size()){
-                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
+                if(index + 1 >= playerMenuManager.getTableEntries().size()){
+                    playerMenuManager.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
                     open();
                     break;
                 }
@@ -53,19 +53,19 @@ public class ListItems extends PaginatedMenu {
                     index -= 2;
                 if(rawSlot >= 37)
                     index -= 2;
-                new EditTableEntry(playerMenu,
-                                       index,
-                                       playerMenu.getTableEntries().get(index).getItemStack(),
-                                       playerMenu.getTableEntries().get(index).getWeight(),
-                                       playerMenu.getTableEntries().get(index).getMinAmt(),
-                                       playerMenu.getTableEntries().get(index).getMaxAmt()).open();
+                new EditTableEntry(playerMenuManager,
+                                   index,
+                                   playerMenuManager.getTableEntries().get(index).getItemStack(),
+                                   playerMenuManager.getTableEntries().get(index).getWeight(),
+                                   playerMenuManager.getTableEntries().get(index).getMinAmt(),
+                                   playerMenuManager.getTableEntries().get(index).getMaxAmt()).open();
                 break;
         }
     }
 
     @Override
     public Inventory getInventory() {
-        LinkedList<TableEntry> tableEntries = playerMenu.getTableEntries();
+        LinkedList<TableEntry> tableEntries = playerMenuManager.getTableEntries();
 
         inventory.clear();
         addPaginatedMenuBorder();

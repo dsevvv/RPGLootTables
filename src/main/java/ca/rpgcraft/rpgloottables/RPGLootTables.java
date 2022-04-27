@@ -3,7 +3,7 @@ package ca.rpgcraft.rpgloottables;
 import ca.rpgcraft.rpgloottables.command.admin.MainMenu;
 import ca.rpgcraft.rpgloottables.listeners.LootGenerate;
 import ca.rpgcraft.rpgloottables.listeners.Menu;
-import ca.rpgcraft.rpgloottables.util.PlayerMenu;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
 import org.bukkit.Bukkit;
@@ -15,7 +15,7 @@ import java.util.*;
 
 public final class RPGLootTables extends JavaPlugin {
 
-    private static HashMap<Player, PlayerMenu> playerMenuUtilityMap;
+    private static HashMap<Player, PlayerMenuManager> playerMenuUtilityMap;
 
     /**
      * Called on server startup or reload
@@ -62,9 +62,9 @@ public final class RPGLootTables extends JavaPlugin {
      * @param p Player whose PlayerMenuUtility to return
      * @return PlayerMenuUtility associated with provided Player
      */
-    public static PlayerMenu getPlayerMenuUtility(Player p){
+    public static PlayerMenuManager getPlayerMenuUtility(Player p){
         if(!playerMenuUtilityMap.containsKey(p)) //pretty sure this check is redundant but just making sure
-            playerMenuUtilityMap.put(p, new PlayerMenu(p));
+            playerMenuUtilityMap.put(p, new PlayerMenuManager(p));
 
         return playerMenuUtilityMap.get(p);
     }

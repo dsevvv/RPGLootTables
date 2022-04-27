@@ -4,7 +4,7 @@ import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
 import ca.rpgcraft.rpgloottables.util.CustomLootTable;
 import ca.rpgcraft.rpgloottables.util.TableList;
-import ca.rpgcraft.rpgloottables.util.PlayerMenu;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 public class ListEditCustomTable extends PaginatedMenu {
-    public ListEditCustomTable(PlayerMenu playerMenu, String inventoryName) {
-        super(playerMenu, inventoryName);
+    public ListEditCustomTable(PlayerMenuManager playerMenuManager, String inventoryName) {
+        super(playerMenuManager, inventoryName);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ListEditCustomTable extends PaginatedMenu {
         switch (rawSlot){
             case 48:
                 if(page == 0){
-                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
+                    playerMenuManager.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
                     open();
                     break;
                 }
@@ -36,11 +36,11 @@ public class ListEditCustomTable extends PaginatedMenu {
                 open();
                 break;
             case 49:
-                new ChoiceCustomTable(playerMenu).open();
+                new ChoiceCustomTable(playerMenuManager).open();
                 break;
             case 50:
                 if(index + 1 >= TableList.getLoadedCustomTables().size()){
-                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
+                    playerMenuManager.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
                     open();
                     break;
                 }
@@ -55,13 +55,13 @@ public class ListEditCustomTable extends PaginatedMenu {
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou chose &6" + clickedItem.getItemMeta().getDisplayName() + "&a."));
                 String name = clickedItem.getItemMeta().getDisplayName();
                 HashMap<String, CustomLootTable> loadedTables = TableList.getLoadedCustomTables();
-                playerMenu.setLootTableName(loadedTables.get(name).getName());
-                playerMenu.setChance(loadedTables.get(name).getChance());
-                playerMenu.setEnabled(loadedTables.get(name).isGlobal());
-                playerMenu.setMinTableItems(loadedTables.get(name).getMinItems());
-                playerMenu.setMaxTableItems(loadedTables.get(name).getMaxItems());
-                playerMenu.setTableEntries(loadedTables.get(name).getTableEntries());
-                new EditCustomTable(playerMenu).open();
+                playerMenuManager.setLootTableName(loadedTables.get(name).getName());
+                playerMenuManager.setChance(loadedTables.get(name).getChance());
+                playerMenuManager.setEnabled(loadedTables.get(name).isGlobal());
+                playerMenuManager.setMinTableItems(loadedTables.get(name).getMinItems());
+                playerMenuManager.setMaxTableItems(loadedTables.get(name).getMaxItems());
+                playerMenuManager.setTableEntries(loadedTables.get(name).getTableEntries());
+                new EditCustomTable(playerMenuManager).open();
                 break;
         }
     }

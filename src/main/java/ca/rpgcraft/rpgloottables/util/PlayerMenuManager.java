@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.util.LinkedList;
 
-public class PlayerMenu {
+public class PlayerMenuManager {
 
     private final Player owner;
     private String lootTableName;
@@ -21,7 +21,7 @@ public class PlayerMenu {
      * Input data will be read from this object and saved to the appropriate locations.
      * @param owner Player that owns this instance.
      */
-    public PlayerMenu(Player owner) {
+    public PlayerMenuManager(Player owner) {
         this.owner = owner;
     }
 

@@ -2,7 +2,7 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
 import ca.rpgcraft.rpgloottables.util.TableList;
-import ca.rpgcraft.rpgloottables.util.PlayerMenu;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.LinkedList;
 
 public class ListMob extends PaginatedMenu {
-    public ListMob(PlayerMenu playerMenu, String inventoryName) {
-        super(playerMenu, inventoryName);
+    public ListMob(PlayerMenuManager playerMenuManager, String inventoryName) {
+        super(playerMenuManager, inventoryName);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class ListMob extends PaginatedMenu {
         switch(rawSlot){
             case 48:
                 if(page == 0){
-                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
+                    playerMenuManager.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the first page!"));
                     open();
                     break;
                 }
@@ -35,11 +35,11 @@ public class ListMob extends PaginatedMenu {
                 open();
                 break;
             case 49:
-                new MainMenu(playerMenu).open();
+                new MainMenu(playerMenuManager).open();
                 break;
             case 50:
                 if(index + 1 >= TableList.getMobLootTables().length){
-                    playerMenu.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
+                    playerMenuManager.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
                     open();
                     break;
                 }
@@ -54,16 +54,16 @@ public class ListMob extends PaginatedMenu {
                 }
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou chose &6" + clickedItem.getItemMeta().getDisplayName().replace("minecraft:", "") + "&a."));
                 if(TableList.getLoadedVanillaTables().containsKey(clickedItem.getItemMeta().getDisplayName())){
-                    playerMenu.setLootTableName(clickedItem.getItemMeta().getDisplayName());
-                    playerMenu.setEnabled(TableList.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).isKeepVanillaLoot());
-                    playerMenu.setAssociatedTables(TableList.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).getAssociatedTableList());
-                    new EditVanillaTable(playerMenu).open();
+                    playerMenuManager.setLootTableName(clickedItem.getItemMeta().getDisplayName());
+                    playerMenuManager.setEnabled(TableList.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).isKeepVanillaLoot());
+                    playerMenuManager.setAssociatedTables(TableList.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).getAssociatedTableList());
+                    new EditVanillaTable(playerMenuManager).open();
                     break;
                 }else{
-                    playerMenu.setLootTableName(clickedItem.getItemMeta().getDisplayName());
-                    playerMenu.setEnabled(true);
-                    playerMenu.setAssociatedTables(new LinkedList<>());
-                    new EditVanillaTable(playerMenu).open();
+                    playerMenuManager.setLootTableName(clickedItem.getItemMeta().getDisplayName());
+                    playerMenuManager.setEnabled(true);
+                    playerMenuManager.setAssociatedTables(new LinkedList<>());
+                    new EditVanillaTable(playerMenuManager).open();
                     break;
                 }
         }

@@ -1,8 +1,7 @@
 package ca.rpgcraft.rpgloottables.command.admin;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
-import ca.rpgcraft.rpgloottables.menu.admin.MainMenu;
-import ca.rpgcraft.rpgloottables.util.PlayerMenu;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,8 +32,8 @@ public class MainMenu implements CommandExecutor {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to do that."));
                 return false;
             }
-            PlayerMenu playerMenu = new PlayerMenu(player);
-            ca.rpgcraft.rpgloottables.menu.admin.MainMenu mainMenu = new ca.rpgcraft.rpgloottables.menu.admin.MainMenu(playerMenu);
+            PlayerMenuManager playerMenuManager = new PlayerMenuManager(player);
+            ca.rpgcraft.rpgloottables.menu.admin.MainMenu mainMenu = new ca.rpgcraft.rpgloottables.menu.admin.MainMenu(playerMenuManager);
             mainMenu.open();
             return false;
         }

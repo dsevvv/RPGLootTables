@@ -2,7 +2,7 @@ package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
 import ca.rpgcraft.rpgloottables.util.TableList;
-import ca.rpgcraft.rpgloottables.util.PlayerMenu;
+import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,27 +15,27 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.LinkedList;
 
 public class ChoiceCustomTable extends Menu {
-    public ChoiceCustomTable(PlayerMenu playerMenu) {
-        super(playerMenu);
+    public ChoiceCustomTable(PlayerMenuManager playerMenuManager) {
+        super(playerMenuManager);
     }
 
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
             case 12:
-                playerMenu.setLootTableName("Table " + (TableList.getLoadedCustomTables().size() + 1));
-                playerMenu.setEnabled(false);
-                playerMenu.setChance(100);
-                playerMenu.setMaxTableItems(1);
-                playerMenu.setMinTableItems(1);
-                playerMenu.setTableEntries(new LinkedList<>());
-                new EditCustomTable(playerMenu).open();
+                playerMenuManager.setLootTableName("Table " + (TableList.getLoadedCustomTables().size() + 1));
+                playerMenuManager.setEnabled(false);
+                playerMenuManager.setChance(100);
+                playerMenuManager.setMaxTableItems(1);
+                playerMenuManager.setMinTableItems(1);
+                playerMenuManager.setTableEntries(new LinkedList<>());
+                new EditCustomTable(playerMenuManager).open();
                 break;
             case 14:
-                new ListEditCustomTable(playerMenu, ChatColor.translateAlternateColorCodes('&', "     &0Edit Custom Loot Tables")).open();
+                new ListEditCustomTable(playerMenuManager, ChatColor.translateAlternateColorCodes('&', "     &0Edit Custom Loot Tables")).open();
                 break;
             case 22:
-                new MainMenu(playerMenu).open();
+                new MainMenu(playerMenuManager).open();
                 break;
             default:
                 open();
