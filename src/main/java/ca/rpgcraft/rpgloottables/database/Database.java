@@ -27,7 +27,9 @@ public class Database {
     private Connection conn;
 
     /**
-     *
+     * createDatabase() function connects to the jdbc driver and then creates or connects to a db file depending
+     * if that file exists or not. After the db file is created, it then calls the create table methods below to create
+     * the necessary tables in the db that are needed.
      * @throws SQLException
      */
 
@@ -63,6 +65,10 @@ public class Database {
         }
     }
 
+    /**
+     * createVanillaTable function returns a SQL statement that creates the vanilla table in the db file
+     * @return SQL statment to create Vanilla table
+     */
     private String createVanillaTable() {
         return "CREATE TABLE IF NOT EXISTS VanillaLootTable (\n"
                 + "vanilla_id text PRIMARY KEY, \n"
@@ -70,6 +76,11 @@ public class Database {
                 + "custom_names text NULL \n"
                 + ");";
     }
+
+    /**
+     * createCustomLootTable function returns a SQL statement that creates the custom table in the db file
+     * @return SQL statment to create Custom table
+     */
     private String createCustomLootTable() {
         return "CREATE TABLE IF NOT EXISTS CustomLootTable (\n"
                 + "custom_id text PRIMARY KEY, \n"
@@ -79,6 +90,11 @@ public class Database {
                 + "maxItems integer NOT NULL \n"
                 + ");";
     }
+
+    /**
+     * createVanillaCustomLootTable function returns a SQL statement that creates the vanilla_custom table in the db file
+     * @return SQL statment to create Vanilla_Custom table
+     */
     private String createVanillaCustomLootTable() {
         return "CREATE TABLE IF NOT EXISTS Vanilla_Custom (\n"
                 + "vanilla_id text NOT NULL, \n"
@@ -88,6 +104,11 @@ public class Database {
                 + "FOREIGN KEY (custom_id) REFERENCES CustomLootTable (custom_id)\n"
                 + ");";
     }
+
+    /**
+     * createItemsLootTable function returns a SQL statement that creates the items table in the db file
+     * @return SQL statment to create items table
+     */
     private String createItemsTable() {
         return "CREATE TABLE IF NOT EXISTS ItemsTable (\n"
                 + "uniqueID integer PRIMARY KEY, \n"
@@ -100,6 +121,9 @@ public class Database {
                 + ");";
     }
 
+    /**
+     * insertVanillaTables function inserts the vanilla tables from memory into the vanilla table in the db file.
+     */
     private void insertVanillaTables(){
         HashMap<String, VanillaLootTable> loadedVanillaTables = TableList.getLoadedVanillaTables();
         Set<String> keys = loadedVanillaTables.keySet();
@@ -124,6 +148,11 @@ public class Database {
             }
         }
     }
+
+    /**
+     * insertCustomLootTables function inserts the custom tables associated with each vanilla table from
+     * memory into the custom table in the db file.
+     */
     private void insertCustomLootTables(){
         HashMap<String, CustomLootTable> loadedCustomTables = TableList.getLoadedCustomTables();
         Set<String> keys = loadedCustomTables.keySet();
@@ -152,6 +181,10 @@ public class Database {
         }
     }
 
+    /**
+     * insertVanillaCustomTables function inserts the custom tables associated with each vanilla table from
+     * memory into the custom table.
+     */
     private void insertVanillaCustomLootTables(){
         HashMap<String, VanillaLootTable> loadedVanillaTables = TableList.getLoadedVanillaTables();
         Set<String> keys = loadedVanillaTables.keySet();
@@ -174,6 +207,11 @@ public class Database {
         }
     }
 
+    /**
+     * itemStackEncode function takes the long string from the ItemStack and "compress" the string down into an array
+     * of bits.
+     * @return string of bits that is the compressed version of the ItemStack string
+     */
     private String itemStackEncode(ItemStack item){
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         String encodedObject = null;
@@ -189,6 +227,11 @@ public class Database {
         return encodedObject;
     }
 
+    /**
+     * decodeItemStackBytes function takes the string of bits from the itemStackEncode function and converts it back
+     * into the original string.
+     * @return ItemStack string
+     */
     private ItemStack decodeItemStackBytes(String bytes){
         ItemStack newItem = null;
         try{
@@ -202,6 +245,11 @@ public class Database {
         return newItem;
     }
 
+    /**
+     * insertItemTables function loops through all of the items that are used in each custom loot table and adds everything
+     * into the ItemsTable in the db file.
+     * @return ItemStack string
+     */
     private void insertItemTables(){
         HashMap<String, CustomLootTable> loadedCustomTables = TableList.getLoadedCustomTables();
         Set<String> keys = loadedCustomTables.keySet();
@@ -233,6 +281,9 @@ public class Database {
         }
     }
 
+    /**
+     * saveTables function Calls all insert methods to be called at once.
+     */
     private void saveTables(){
         insertVanillaTables();
         insertCustomLootTables();
@@ -240,6 +291,9 @@ public class Database {
         insertItemTables();
     }
 
+    /**
+     * runnableStartSave is a runnable that runs every 2 hours (1min for testing purposes) so save all tables in memory.
+     */
     public void runnableStartSave(){
         new BukkitRunnable() {
             @Override
