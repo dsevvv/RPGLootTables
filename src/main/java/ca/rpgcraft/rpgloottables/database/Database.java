@@ -337,14 +337,15 @@ public class Database {
             stmt = conn.createStatement();
             res = stmt.executeQuery("SELECT * VanillaLootTables");
             while(res.next()){
-                String custom_id = res.getString("custom_id");
-                boolean global = res.getBoolean("global");
-                double chance = res.getDouble("chance");
-                int minAmount = res.getInt("minItems");
-                int maxAmount = res.getInt("maxItems");
-
-//                clt = new CustomLootTable(custom_id, new LinkedList<TableEntry>(), global, chance, minAmount, maxAmount);
-//                TableList.getLoadedCustomTables().put(custom_id,clt);
+                String vanilla_id = res.getString("vanilla_id");
+                boolean enabled = res.getBoolean("enabled");
+                String customNames = res.getString("customNames");
+                String[] customNameSplit = customNames.split("\\|");
+                vlt = new VanillaLootTable(vanilla_id,new LinkedList<CustomLootTable>(),enabled);
+                for(String name: customNameSplit){
+                    vlt.getAssociatedTableList().add(TableList.getLoadedCustomTables().get(name));
+                }
+                TableList.getLoadedVanillaTables().put(vanilla_id,vlt);
             }
 
         } catch (SQLException e) {
@@ -352,6 +353,11 @@ public class Database {
         }
     }
 
+    public void loadTables(){
+        retrieveCustomLootTables();
+        retrieveItemTables();
+        retrieveVanillaTables();
+    }
 
     /**
      * saveTables function Calls all insert methods to be called at once.
@@ -360,6 +366,18 @@ public class Database {
         insertVanillaTables();
         insertCustomLootTables();
         insertItemTables();
+    }
+
+    public boolean isConnected() {return conn != null;}
+
+    public void disconnect(){
+        if (isConnected()){
+            try {
+                conn.close();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -371,6 +389,6 @@ public class Database {
             public void run() {
                 saveTables();
             }
-        }.runTaskTimer(plugin, 20 * 60 * 120, 20 * 60 * 120); // 2 hour delay
+        }.runTaskTimer(plugin, 20 * 60 * 2, 20 * 60 * 2); // 2 hour delay
     }
 }

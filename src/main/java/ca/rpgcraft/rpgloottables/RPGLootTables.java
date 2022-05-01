@@ -34,6 +34,7 @@ public final class RPGLootTables extends JavaPlugin {
         try{
             db.createDatabase();
             db.runnableStartSave();
+            db.loadTables();
         }catch (SQLException e){
             e.printStackTrace();
         }
