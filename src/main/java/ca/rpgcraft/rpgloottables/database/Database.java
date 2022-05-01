@@ -16,9 +16,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.io.File;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.locks.StampedLock;
 
 public class Database {
 
@@ -42,7 +41,6 @@ public class Database {
         if(!pathFile.isFile()){
             String vanilla_table = createVanillaTable();
             String custom_table = createCustomLootTable();
-            String vanilla_custom_table = createVanillaCustomLootTable();
             String item_table = createItemsTable();
             try{
                 conn = DriverManager.getConnection("jdbc:sqlite:" + path);
@@ -52,8 +50,6 @@ public class Database {
                 plugin.getLogger().warning("vanilla_table created");
                 stmt.execute(custom_table);
                 plugin.getLogger().warning("custom_table created");
-                stmt.execute(vanilla_custom_table);
-                plugin.getLogger().warning("vanilla_custom table created");
                 stmt.execute(item_table);
                 plugin.getLogger().warning("item_table created");
             } catch (SQLException e) {
@@ -73,7 +69,7 @@ public class Database {
         return "CREATE TABLE IF NOT EXISTS VanillaLootTable (\n"
                 + "vanilla_id text PRIMARY KEY, \n"
                 + "enabled integer NOT NULL, \n"
-                + "custom_names text NULL \n"
+                + "customNames text NULL \n"
                 + ");";
     }
 
@@ -91,19 +87,19 @@ public class Database {
                 + ");";
     }
 
-    /**
-     * createVanillaCustomLootTable function returns a SQL statement that creates the vanilla_custom table in the db file
-     * @return SQL statment to create Vanilla_Custom table
-     */
-    private String createVanillaCustomLootTable() {
-        return "CREATE TABLE IF NOT EXISTS Vanilla_Custom (\n"
-                + "vanilla_id text NOT NULL, \n"
-                + "custom_id text NOT NULL, \n"
-                + "PRIMARY KEY (vanilla_id, custom_id),\n"
-                + "FOREIGN KEY (vanilla_id) REFERENCES VanillaLootTable (vanilla_id),\n"
-                + "FOREIGN KEY (custom_id) REFERENCES CustomLootTable (custom_id)\n"
-                + ");";
-    }
+//    /**
+//     * createVanillaCustomLootTable function returns a SQL statement that creates the vanilla_custom table in the db file
+//     * @return SQL statment to create Vanilla_Custom table
+//     */
+//    private String createVanillaCustomLootTable() {
+//        return "CREATE TABLE IF NOT EXISTS Vanilla_Custom (\n"
+//                + "vanilla_id text NOT NULL, \n"
+//                + "custom_id text NOT NULL, \n"
+//                + "PRIMARY KEY (vanilla_id, custom_id),\n"
+//                + "FOREIGN KEY (vanilla_id) REFERENCES VanillaLootTable (vanilla_id),\n"
+//                + "FOREIGN KEY (custom_id) REFERENCES CustomLootTable (custom_id)\n"
+//                + ");";
+//    }
 
     /**
      * createItemsLootTable function returns a SQL statement that creates the items table in the db file
@@ -111,8 +107,8 @@ public class Database {
      */
     private String createItemsTable() {
         return "CREATE TABLE IF NOT EXISTS ItemsTable (\n"
-                + "uniqueID integer PRIMARY KEY, \n"
-                + "customID text NOT NULL, \n"
+                + "unique_id integer PRIMARY KEY, \n"
+                + "custom_id text NOT NULL, \n"
                 + "weight integer NOT NULL, \n"
                 + "minAmount integer NOT NULL,\n"
                 + "maxAmount integer NOT NULL,\n"
@@ -130,7 +126,7 @@ public class Database {
 
         for(String key : keys){
             VanillaLootTable vanillaLootTable = loadedVanillaTables.get(key);
-            String sql = "INSERT OR REPLACE INTO VanillaLootTable (vanilla_id,enabled) VALUES(?,?)";
+            String sql = "INSERT OR REPLACE INTO VanillaLootTable (vanilla_id,enabled, customNames) VALUES(?,?,?)";
 
             try{
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -142,6 +138,7 @@ public class Database {
                 }
                 preparedStatement.setString(1, name);
                 preparedStatement.setInt(2, boolInt);
+                preparedStatement.setString(3, String.valueOf(innerBuilder));
                 preparedStatement.executeUpdate();
             }catch (SQLException e){
                 e.printStackTrace();
@@ -181,31 +178,31 @@ public class Database {
         }
     }
 
-    /**
-     * insertVanillaCustomTables function inserts the custom tables associated with each vanilla table from
-     * memory into the custom table.
-     */
-    private void insertVanillaCustomLootTables(){
-        HashMap<String, VanillaLootTable> loadedVanillaTables = TableList.getLoadedVanillaTables();
-        Set<String> keys = loadedVanillaTables.keySet();
-        for(String key : keys){
-            VanillaLootTable vanillaLootTable = loadedVanillaTables.get(key);
-            for(CustomLootTable customTable: vanillaLootTable.getAssociatedTableList()){
-                String sql = "INSERT OR REPLACE INTO Vanilla_Custom (vanilla_id,custom_id) VALUES(?,?)";
-                try{
-                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                    String vanillaId = vanillaLootTable.getVanillaTableName();
-                    String customId = customTable.getName();
-                    preparedStatement.setString(1, vanillaId);
-                    preparedStatement.setString(2, customId);
-                    preparedStatement.executeUpdate();
-
-                }catch (SQLException e){
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+//    /**
+//     * insertVanillaCustomTables function inserts the custom tables associated with each vanilla table from
+//     * memory into the custom table.
+//     */
+//    private void insertVanillaCustomLootTables(){
+//        HashMap<String, VanillaLootTable> loadedVanillaTables = TableList.getLoadedVanillaTables();
+//        Set<String> keys = loadedVanillaTables.keySet();
+//        for(String key : keys){
+//            VanillaLootTable vanillaLootTable = loadedVanillaTables.get(key);
+//            for(CustomLootTable customTable: vanillaLootTable.getAssociatedTableList()){
+//                String sql = "INSERT OR REPLACE INTO Vanilla_Custom (vanilla_id,custom_id) VALUES(?,?)";
+//                try{
+//                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+//                    String vanillaId = vanillaLootTable.getVanillaTableName();
+//                    String customId = customTable.getName();
+//                    preparedStatement.setString(1, vanillaId);
+//                    preparedStatement.setString(2, customId);
+//                    preparedStatement.executeUpdate();
+//
+//                }catch (SQLException e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 
     /**
      * itemStackEncode function takes the long string from the ItemStack and "compress" the string down into an array
@@ -281,13 +278,87 @@ public class Database {
         }
     }
 
+    private void retrieveCustomLootTables() {
+        Statement stmt;
+        ResultSet res;
+        CustomLootTable clt;
+
+        try {
+            stmt = conn.createStatement();
+            res = stmt.executeQuery("SELECT * CustomLootTables");
+            while(res.next()){
+                String custom_id = res.getString("custom_id");
+                boolean global = res.getBoolean("global");
+                double chance = res.getDouble("chance");
+                int minAmount = res.getInt("minItems");
+                int maxAmount = res.getInt("maxItems");
+
+                clt = new CustomLootTable(custom_id, new LinkedList<TableEntry>(), global, chance, minAmount, maxAmount);
+                TableList.getLoadedCustomTables().put(custom_id,clt);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void retrieveItemTables() {
+        Statement stmt;
+        ResultSet res;
+        TableEntry te;
+
+        try {
+            stmt = conn.createStatement();
+            res = stmt.executeQuery("SELECT * FROM ItemsTable");
+            while(res.next()){
+                String custom_id = res.getString("custom_id");
+                CustomLootTable clt = TableList.getLoadedCustomTables().get(custom_id);
+                Integer weight = res.getInt("weight");
+                Integer minAmount = res.getInt("minAmount");
+                Integer maxAmount = res.getInt("maxAmount");
+                String itemStack = res.getString("itemStack");
+                ItemStack item = decodeItemStackBytes(itemStack);
+
+                te = new TableEntry(item, weight,minAmount,maxAmount);
+
+                clt.getTableEntries().add(te);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void retrieveVanillaTables() {
+        Statement stmt;
+        ResultSet res;
+        VanillaLootTable vlt;
+
+        try {
+            stmt = conn.createStatement();
+            res = stmt.executeQuery("SELECT * VanillaLootTables");
+            while(res.next()){
+                String custom_id = res.getString("custom_id");
+                boolean global = res.getBoolean("global");
+                double chance = res.getDouble("chance");
+                int minAmount = res.getInt("minItems");
+                int maxAmount = res.getInt("maxItems");
+
+//                clt = new CustomLootTable(custom_id, new LinkedList<TableEntry>(), global, chance, minAmount, maxAmount);
+//                TableList.getLoadedCustomTables().put(custom_id,clt);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * saveTables function Calls all insert methods to be called at once.
      */
-    private void saveTables(){
+    public void saveTables(){
         insertVanillaTables();
         insertCustomLootTables();
-        insertVanillaCustomLootTables();
         insertItemTables();
     }
 

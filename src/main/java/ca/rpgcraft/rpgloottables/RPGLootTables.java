@@ -18,6 +18,7 @@ import java.util.*;
 public final class RPGLootTables extends JavaPlugin {
 
     private static HashMap<Player, PlayerMenuManager> playerMenuUtilityMap;
+    private Database db;
 
     /**
      * Called on server startup or reload
@@ -28,7 +29,7 @@ public final class RPGLootTables extends JavaPlugin {
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
 
-        Database db = new Database();
+        db = new Database();
 
         try{
             db.createDatabase();
@@ -60,6 +61,8 @@ public final class RPGLootTables extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+        db.disconnect();
+        db.saveTables();
         long startTime = System.currentTimeMillis();
 
         playerMenuUtilityMap = null; //cuz static
@@ -78,14 +81,5 @@ public final class RPGLootTables extends JavaPlugin {
             playerMenuUtilityMap.put(p, new PlayerMenuManager(p));
 
         return playerMenuUtilityMap.get(p);
-    }
-
-    private void test(){
-        HashMap<String, VanillaLootTable> vanillaTablesMap = TableList.getLoadedVanillaTables();
-        vanillaTablesMap.keySet().forEach(key -> {
-            getLogger().info(String.format("\nName: %s\nKeep Vanilla Loot: %s", vanillaTablesMap.get(key).getVanillaTableName(), vanillaTablesMap.get(key).isKeepVanillaLoot()));
-            getLogger().info("Associated Tables:\n");
-            vanillaTablesMap.get(key).getAssociatedTableList().forEach(customLootTableUtility -> getLogger().info(customLootTableUtility.getName() + "\n"));
-        });
     }
 }
