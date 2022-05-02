@@ -58,6 +58,7 @@ public class Database {
         }
         else{
             plugin.getLogger().warning("Database file already exists");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + path);
         }
     }
 
@@ -113,7 +114,7 @@ public class Database {
                 + "minAmount integer NOT NULL,\n"
                 + "maxAmount integer NOT NULL,\n"
                 + "itemStack text NOT NULL,\n"
-                + "FOREIGN KEY (customID) REFERENCES CustomLootTable (custom_id)\n"
+                + "FOREIGN KEY (custom_id) REFERENCES CustomLootTable (custom_id)\n"
                 + ");";
     }
 
@@ -253,7 +254,7 @@ public class Database {
         for(String key : keys){
             CustomLootTable customLootTable = loadedCustomTables.get(key);
             for(TableEntry tableEntry: customLootTable.getTableEntries()){
-                String sql = "INSERT OR REPLACE INTO ItemsTable (uniqueId,customID,weight,minAmount,maxAmount,itemStack) VALUES(?,?,?,?,?,?)";
+                String sql = "INSERT OR REPLACE INTO ItemsTable (unique_id,custom_id,weight,minAmount,maxAmount,itemStack) VALUES(?,?,?,?,?,?)";
                 try{
                     PreparedStatement preparedStatement = conn.prepareStatement(sql);
                     String customId = customLootTable.getName();
@@ -285,7 +286,7 @@ public class Database {
 
         try {
             stmt = conn.createStatement();
-            res = stmt.executeQuery("SELECT * CustomLootTables");
+            res = stmt.executeQuery("SELECT * from CustomLootTable");
             while(res.next()){
                 String custom_id = res.getString("custom_id");
                 boolean global = res.getBoolean("global");
@@ -335,7 +336,7 @@ public class Database {
 
         try {
             stmt = conn.createStatement();
-            res = stmt.executeQuery("SELECT * VanillaLootTables");
+            res = stmt.executeQuery("SELECT * from VanillaLootTable");
             while(res.next()){
                 String vanilla_id = res.getString("vanilla_id");
                 boolean enabled = res.getBoolean("enabled");

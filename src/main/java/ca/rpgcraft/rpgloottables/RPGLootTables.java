@@ -62,8 +62,8 @@ public final class RPGLootTables extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        db.disconnect();
         db.saveTables();
+        db.disconnect();
         long startTime = System.currentTimeMillis();
 
         playerMenuUtilityMap = null; //cuz static
