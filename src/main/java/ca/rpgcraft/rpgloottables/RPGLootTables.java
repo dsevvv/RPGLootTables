@@ -1,21 +1,23 @@
 package ca.rpgcraft.rpgloottables;
 
 import ca.rpgcraft.rpgloottables.command.admin.MainMenu;
+import ca.rpgcraft.rpgloottables.database.Database;
 import ca.rpgcraft.rpgloottables.listeners.LootGenerate;
 import ca.rpgcraft.rpgloottables.listeners.Menu;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
-import ca.rpgcraft.rpgloottables.util.TableList;
-import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public final class RPGLootTables extends JavaPlugin {
 
     private static HashMap<Player, PlayerMenuManager> playerMenuUtilityMap;
+    private Database db;
 
     /**
      * Called on server startup or reload
@@ -25,6 +27,16 @@ public final class RPGLootTables extends JavaPlugin {
         saveDefaultConfig();
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
+
+        db = new Database();
+
+        try{
+            db.createDatabase();
+            db.runnableStartSave();
+            db.loadTables();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
 
         long startTime = System.currentTimeMillis();
         MainMenu mainMenu = new MainMenu();
@@ -49,6 +61,8 @@ public final class RPGLootTables extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+        db.saveTables();
+        db.disconnect();
         long startTime = System.currentTimeMillis();
 
         playerMenuUtilityMap = null; //cuz static
@@ -67,14 +81,5 @@ public final class RPGLootTables extends JavaPlugin {
             playerMenuUtilityMap.put(p, new PlayerMenuManager(p));
 
         return playerMenuUtilityMap.get(p);
-    }
-
-    private void test(){
-        HashMap<String, VanillaLootTable> vanillaTablesMap = TableList.getLoadedVanillaTables();
-        vanillaTablesMap.keySet().forEach(key -> {
-            getLogger().info(String.format("\nName: %s\nKeep Vanilla Loot: %s", vanillaTablesMap.get(key).getVanillaTableName(), vanillaTablesMap.get(key).isKeepVanillaLoot()));
-            getLogger().info("Associated Tables:\n");
-            vanillaTablesMap.get(key).getAssociatedTableList().forEach(customLootTableUtility -> getLogger().info(customLootTableUtility.getName() + "\n"));
-        });
     }
 }
