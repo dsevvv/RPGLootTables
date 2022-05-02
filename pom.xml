@@ -53,11 +53,52 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.5.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <obfuscate>true</obfuscate>
+                    <injar>original-${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}.jar</outjar>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <proguardInclude>${basedir}/proguard.conf</proguardInclude>
+                    <libs>
+                        <lib>${java.home}/jmods/java.base.jmod</lib>
+                        <lib>${java.home}/jmods/java.logging.jmod</lib>
+                    </libs>
+                    <options>
+                        <option>-verbose</option>
+                        <option>-dontnote module-info</option>
+                        <option>-dontnote jdk.internal.jimage.*</option>
+                        <option>-dontnote jdk.internal.jimage.decompressor.*</option>
+                        <option>-dontnote jdk.internal.jrtfs.*</option>
+                        <option>-dontwarn java.sql.**</option>
+                        <option>-keepclassmembers, allowobfuscation class * {
+                            @org.bukkit.event.EventHandler *;
+                            }
+                        </option>
+                        <option>-overloadaggressively</option>
+                        <option>-repackageclasses</option>
+                        <option>-keepattributes *Annotation*, Override, InnerClasses, Exceptions, Signature, SourceFile, LineNumberTable</option>
+                        <option>-keep public class ca.rpgcraft.rpgloottables.RPGLootTables</option>
+                        <option>-printmapping proguard_map_custom_loot_tables</option>
+                    </options>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
                 <configuration>
-                    <outputDirectory>C:\Users\t10sc\Desktop\test_server\plugins</outputDirectory>
+                    <outputDirectory>E:\Minecraft Servers\1.18.2 Test Server\plugins</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>

@@ -5,8 +5,7 @@ import ca.rpgcraft.rpgloottables.database.Database;
 import ca.rpgcraft.rpgloottables.listeners.LootGenerate;
 import ca.rpgcraft.rpgloottables.listeners.Menu;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
-import ca.rpgcraft.rpgloottables.util.TableList;
-import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
