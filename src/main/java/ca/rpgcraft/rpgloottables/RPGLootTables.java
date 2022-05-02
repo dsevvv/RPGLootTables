@@ -47,6 +47,10 @@ public final class RPGLootTables extends JavaPlugin {
         getCommand("rpgl").setExecutor(mainMenu);
         getCommand("rloot").setExecutor(mainMenu);
         getCommand("rl").setExecutor(mainMenu);
+        getCommand("rpgloot").setTabCompleter(mainMenu);
+        getCommand("rpgl").setTabCompleter(mainMenu);
+        getCommand("rloot").setTabCompleter(mainMenu);
+        getCommand("rl").setTabCompleter(mainMenu);
 
         //registering listeners
         Bukkit.getPluginManager().registerEvents(new Menu(), this);
