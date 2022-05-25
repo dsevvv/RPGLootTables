@@ -6,16 +6,15 @@ import ca.rpgcraft.rpgloottables.license.AdvancedLicense;
 import ca.rpgcraft.rpgloottables.util.CustomLootTable;
 import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
-import java.io.File;
 import java.util.*;
 
 public class Database {
@@ -371,8 +370,21 @@ public class Database {
         }.runTaskTimer(plugin, 20 * 60 * 2, 20 * 60 * 2); // 2 hour delay
     }
 
-    public void checkLicense(){
-        String key = plugin.getConfig().getString("license-key");
-        if (!new AdvancedLicense(key,"https://sevschmidtplugins.000webhostapp.com/verify.php",plugin).register()) return;
+    public boolean checkLicense(){
+        String keyHex = "6c6963656e73652d6b6579";
+        String linkHex = "68747470733a2f2f7365767363686d696474706c7567696e732e303030776562686f73746170702e636f6d2f7665726966792e706870";
+        byte[] pathBytes;
+        byte[] linkBytes;
+        String path = "";
+        String link = "";
+        try{
+            pathBytes = Hex.decodeHex(keyHex.toCharArray());
+            linkBytes = Hex.decodeHex(linkHex.toCharArray());
+            path = new String(pathBytes, "UTF-8");
+            link = new String(linkBytes, "UTF-8");
+        }catch (DecoderException | UnsupportedEncodingException ignored){
+        }
+        String key = plugin.getConfig().getString(path);
+        return new AdvancedLicense(key, link, plugin).register();
     }
 }
