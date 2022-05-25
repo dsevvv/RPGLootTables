@@ -15,7 +15,8 @@ public class CustomLootTable implements LootTable {
     private String name;
     private LinkedList<TableEntry> tableEntries;
     private final LinkedList<TableEntry> entriesCopy;
-    private boolean isGlobal;
+    private boolean isGlobalChest;
+    private boolean isGlobalMob;
     private double chance;
     private int minItems;
     private int maxItems;
@@ -27,16 +28,18 @@ public class CustomLootTable implements LootTable {
      * using their name parameter as the key
      * @param name String name of custom table
      * @param tableEntries List of item entries in this table
-     * @param isEnabled if true this table will be rolled on EVERY SINGLE loot event, PERIOD! VERY DANGEROUS!!!!.
+     * @param isGlobalChest if true this table will be rolled on EVERY SINGLE CHEST loot event, PERIOD! VERY DANGEROUS!!!!
+     * @param isGlobalMob if true this table will be rolled on EVERY SINGLE MOB loot event, PERIOD! VERY DANGEROUS!!!!
      * @param chance double between 0.00-100.00 percentage chance that this table will be rolled
      * @param minItems int minimum amount of items that can generate from this table
      * @param maxItems int maximum amount of items that can generate from this table
      */
-    public CustomLootTable(String name, LinkedList<TableEntry> tableEntries, boolean isEnabled, double chance, int minItems, int maxItems){
+    public CustomLootTable(String name, LinkedList<TableEntry> tableEntries, boolean isGlobalChest, boolean isGlobalMob, double chance, int minItems, int maxItems){
         this.name = name;
         this.tableEntries = tableEntries;
         this.entriesCopy = (LinkedList<TableEntry>) tableEntries.clone();
-        this.isGlobal = isEnabled;
+        this.isGlobalChest = isGlobalChest;
+        this.isGlobalMob = isGlobalMob;
         this.chance = chance;
         this.minItems = minItems;
         this.maxItems = maxItems;
@@ -112,12 +115,16 @@ public class CustomLootTable implements LootTable {
         this.name = name;
     }
 
-    public boolean isGlobal() {
-        return isGlobal;
+    public boolean isGlobalChest() {
+        return isGlobalChest;
     }
 
-    public void setGlobal(boolean global) {
-        isGlobal = global;
+    public boolean isGlobalMob() {
+        return isGlobalMob;
+    }
+
+    public void setGlobalChest(boolean globalChest) {
+        isGlobalChest = globalChest;
     }
 
     public double getChance() {

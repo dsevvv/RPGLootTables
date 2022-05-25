@@ -27,13 +27,13 @@ public class LootGenerate implements Listener {
         if(!vanillaLootTable.isKeepVanillaLoot())
             e.setLoot(null);
         for(CustomLootTable customLootTable : TableList.getLoadedCustomTables().values()){
-            if(customLootTable.isGlobal()){
-                CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobal(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
+            if(customLootTable.isGlobalChest()){
+                CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobalChest(), customLootTable.isGlobalMob(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
                 clone.fillInventory(e.getInventoryHolder().getInventory(), new Random(), e.getLootContext());
             }
         }
         for(CustomLootTable customLootTable : vanillaLootTable.getAssociatedTableList()){
-            CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobal(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
+            CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobalChest(), customLootTable.isGlobalMob(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
             clone.fillInventory(e.getInventoryHolder().getInventory(), new Random(), e.getLootContext());
         }
     }
@@ -50,13 +50,13 @@ public class LootGenerate implements Listener {
                 drop.setType(Material.AIR);
             }
         for(CustomLootTable customLootTable : TableList.getLoadedCustomTables().values()){
-            if(customLootTable.isGlobal()){
-                CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobal(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
+            if(customLootTable.isGlobalMob()){
+                CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobalChest(), customLootTable.isGlobalMob(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
                 clone.fillInventory(tempInv, new Random(), new LootContext.Builder(e.getEntity().getLocation()).build());
             }
         }
         for(CustomLootTable customLootTable : vanillaLootTable.getAssociatedTableList()){
-            CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobal(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
+            CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobalChest(), customLootTable.isGlobalMob(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
             clone.fillInventory(tempInv, new Random(), new LootContext.Builder(e.getEntity().getLocation()).build());
         }
         for(ItemStack item : tempInv.getContents()){

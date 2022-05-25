@@ -69,7 +69,7 @@ public class ListAddCustomTable extends PaginatedMenu {
         List<LinkedList<TableEntry>> customTableEntries = new LinkedList<>();
         TableList.getLoadedCustomTables().forEach((name, customLootTableUtility) -> {
             customTableNames.add(customLootTableUtility.getName());
-            customTableGlobals.add(customLootTableUtility.isGlobal());
+            customTableGlobals.add(customLootTableUtility.isGlobalChest());
             customTableChances.add(customLootTableUtility.getChance());
             customTableMinItems.add(customLootTableUtility.getMinItems());
             customTableMaxItems.add(customLootTableUtility.getMaxItems());

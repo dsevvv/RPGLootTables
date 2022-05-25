@@ -55,13 +55,13 @@ public class ListMob extends PaginatedMenu {
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou chose &6" + clickedItem.getItemMeta().getDisplayName().replace("minecraft:", "") + "&a."));
                 if(TableList.getLoadedVanillaTables().containsKey(clickedItem.getItemMeta().getDisplayName())){
                     playerMenuManager.setLootTableName(clickedItem.getItemMeta().getDisplayName());
-                    playerMenuManager.setEnabled(TableList.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).isKeepVanillaLoot());
+                    playerMenuManager.setGlobalChest(TableList.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).isKeepVanillaLoot());
                     playerMenuManager.setAssociatedTables(TableList.getLoadedVanillaTables().get(clickedItem.getItemMeta().getDisplayName()).getAssociatedTableList());
                     new EditVanillaTable(playerMenuManager).open();
                     break;
                 }else{
                     playerMenuManager.setLootTableName(clickedItem.getItemMeta().getDisplayName());
-                    playerMenuManager.setEnabled(true);
+                    playerMenuManager.setGlobalChest(true);
                     playerMenuManager.setAssociatedTables(new LinkedList<>());
                     new EditVanillaTable(playerMenuManager).open();
                     break;

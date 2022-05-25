@@ -25,8 +25,8 @@ public class EditVanillaTable extends Menu {
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
             case 10:
-                playerMenuManager.setEnabled(!playerMenuManager.isEnabled());
-                if(playerMenuManager.isEnabled())
+                playerMenuManager.setGlobalChest(!playerMenuManager.isGlobalChest());
+                if(playerMenuManager.isGlobalChest())
                     whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Vanilla Loot &aon&e."));
                 else
                     whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Vanilla Loot &coff&e."));
@@ -40,8 +40,8 @@ public class EditVanillaTable extends Menu {
                 break;
             case 16:
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSaved &6" + playerMenuManager.getLootTableName().replace("minecraft:", "") + "&a."));
-                if(!playerMenuManager.isEnabled() || playerMenuManager.getAssociatedTables().size() > 0) //we are only saving to memory if defaults have been modified
-                    TableList.getLoadedVanillaTables().put(playerMenuManager.getLootTableName(), new VanillaLootTable(playerMenuManager.getLootTableName(), playerMenuManager.getAssociatedTables(), playerMenuManager.isEnabled()));
+                if(!playerMenuManager.isGlobalChest() || playerMenuManager.getAssociatedTables().size() > 0) //we are only saving to memory if defaults have been modified
+                    TableList.getLoadedVanillaTables().put(playerMenuManager.getLootTableName(), new VanillaLootTable(playerMenuManager.getLootTableName(), playerMenuManager.getAssociatedTables(), playerMenuManager.isGlobalChest()));
                 else
                     TableList.getLoadedVanillaTables().remove(playerMenuManager.getLootTableName());
                 if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("chests"))
@@ -86,7 +86,7 @@ public class EditVanillaTable extends Menu {
 
     private ItemStack toggleGlobalStatus(){
         ItemStack itemStack = new ItemStack(Material.STONE);
-        if(playerMenuManager.isEnabled()){
+        if(playerMenuManager.isGlobalChest()){
             ItemMeta newMeta = itemStack.getItemMeta();
             List<String> newLore = new ArrayList<>();
             newLore.add(ChatColor.translateAlternateColorCodes('&', "&7Will this table generate"));

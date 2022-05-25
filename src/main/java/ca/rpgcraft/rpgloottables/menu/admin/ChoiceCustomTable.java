@@ -24,7 +24,8 @@ public class ChoiceCustomTable extends Menu {
         switch (rawSlot){
             case 12:
                 playerMenuManager.setLootTableName("Table " + (TableList.getLoadedCustomTables().size() + 1));
-                playerMenuManager.setEnabled(false);
+                playerMenuManager.setGlobalChest(false);
+                playerMenuManager.setGlobalMob(false);
                 playerMenuManager.setChance(100);
                 playerMenuManager.setMaxTableItems(1);
                 playerMenuManager.setMinTableItems(1);

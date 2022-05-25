@@ -69,7 +69,7 @@ public class ListRemoveCustomTable extends PaginatedMenu {
         List<LinkedList<TableEntry>> customTableEntries = new LinkedList<>();
         TableList.getLoadedVanillaTables().get(playerMenuManager.getLootTableName()).getAssociatedTableList().forEach((customLootTableUtility) -> {
             customTableNames.add(customLootTableUtility.getName());
-            customTableGlobals.add(customLootTableUtility.isGlobal());
+            customTableGlobals.add(customLootTableUtility.isGlobalChest());
             customTableChances.add(customLootTableUtility.getChance());
             customTableMinItems.add(customLootTableUtility.getMinItems());
             customTableMaxItems.add(customLootTableUtility.getMaxItems());

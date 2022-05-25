@@ -5,7 +5,6 @@ import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.util.CustomLootTable;
 import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.sql.*;
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.locks.StampedLock;
 
 public class Database {
 
@@ -161,7 +159,7 @@ public class Database {
             try{
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
                 String name = customLootTable.getName();
-                int boolInt = customLootTable.isGlobal() ? 1 : 0;
+                int boolInt = customLootTable.isGlobalChest() ? 1 : 0;
                 double chance = customLootTable.getChance();
                 int minItems = customLootTable.getMinItems();
                 int maxItems = customLootTable.getMaxItems();

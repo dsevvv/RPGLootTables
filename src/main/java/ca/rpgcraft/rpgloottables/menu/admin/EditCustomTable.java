@@ -30,7 +30,6 @@ import java.util.List;
 public class EditCustomTable extends Menu {
 
     private NumberFormat doubleFormat = new DecimalFormat("#0.00");
-    private boolean isToggled = playerMenuManager.isEnabled();
     private List<String> oldNames = new LinkedList<>();
 
     public EditCustomTable(PlayerMenuManager playerMenuManager) {
@@ -94,11 +93,20 @@ public class EditCustomTable extends Menu {
                         .open(whoClicked);
                 break;
             case 15:
-                playerMenuManager.setEnabled(!playerMenuManager.isEnabled());
-                if(playerMenuManager.isEnabled()){
-                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Global setting &aon&e."));
+                playerMenuManager.setGlobalChest(!playerMenuManager.isGlobalChest());
+                if(playerMenuManager.isGlobalChest()){
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Global Chest setting &aon&e."));
                 }else{
-                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Global setting &coff&e."));
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Global Chest setting &coff&e."));
+                }
+                open();
+                break;
+            case 16:
+                playerMenuManager.setGlobalMob(!playerMenuManager.isGlobalMob());
+                if(playerMenuManager.isGlobalMob()){
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Global Mob setting &aon&e."));
+                }else{
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Global Mob setting &coff&e."));
                 }
                 open();
                 break;
@@ -186,7 +194,7 @@ public class EditCustomTable extends Menu {
                 break;
             case 43:
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + playerMenuManager.getLootTableName() + " &asaved!"));
-                CustomLootTable customLootTable = new CustomLootTable(playerMenuManager.getLootTableName(), playerMenuManager.getTableEntries(), playerMenuManager.isEnabled(), playerMenuManager.getChance(), playerMenuManager.getMinTableItems(), playerMenuManager.getMaxTableItems());
+                CustomLootTable customLootTable = new CustomLootTable(playerMenuManager.getLootTableName(), playerMenuManager.getTableEntries(), playerMenuManager.isGlobalChest(), playerMenuManager.isGlobalMob(), playerMenuManager.getChance(), playerMenuManager.getMinTableItems(), playerMenuManager.getMaxTableItems());
                 TableList.getLoadedCustomTables().put(playerMenuManager.getLootTableName(), customLootTable);
                 for(VanillaLootTable vanillaLootTable : TableList.getLoadedVanillaTables().values()){
                     int i = 0;
@@ -233,7 +241,8 @@ public class EditCustomTable extends Menu {
                 "",
                 ChatColor.translateAlternateColorCodes('&', "&e" + doubleFormat.format(playerMenuManager.getChance()) + "%")
         ));
-        inv.setItem(15, toggleGlobalStatus());
+        inv.setItem(15, toggleGlobalChest());
+        inv.setItem(16, toggleGlobalMob());
         inv.setItem(19, createItem(
                 Material.CRIMSON_BUTTON,
                 ChatColor.translateAlternateColorCodes('&', "&cDecrease Minimum Items"),
@@ -291,17 +300,17 @@ public class EditCustomTable extends Menu {
         return inv;
     }
 
-    private ItemStack toggleGlobalStatus(){
+    private ItemStack toggleGlobalChest(){
         ItemStack itemStack = new ItemStack(Material.STONE);
-        if(playerMenuManager.isEnabled()){
+        if(playerMenuManager.isGlobalChest()){
             ItemMeta newMeta = itemStack.getItemMeta();
             List<String> newLore = new ArrayList<>();
             newLore.add(ChatColor.translateAlternateColorCodes('&', "&7Will this table roll each"));
-            newLore.add(ChatColor.translateAlternateColorCodes('&', "&7time loot is generated?"));
+            newLore.add(ChatColor.translateAlternateColorCodes('&', "&7time chest loot is generated?"));
             newLore.add("");
             newLore.add(ChatColor.translateAlternateColorCodes('&', "&aEnabled"));
             newMeta.setLore(newLore);
-            newMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eToggle Global Table"));
+            newMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eToggle Global Chest Table"));
             itemStack.setType(Material.GREEN_CONCRETE);
             itemStack.setItemMeta(newMeta);
             return itemStack;
@@ -309,11 +318,40 @@ public class EditCustomTable extends Menu {
             ItemMeta newMeta = itemStack.getItemMeta();
             List<String> newLore = new ArrayList<>();
             newLore.add(ChatColor.translateAlternateColorCodes('&', "&7Will this table roll each"));
-            newLore.add(ChatColor.translateAlternateColorCodes('&', "&7time loot is generated?"));
+            newLore.add(ChatColor.translateAlternateColorCodes('&', "&7time chest loot is generated?"));
             newLore.add("");
             newLore.add(ChatColor.translateAlternateColorCodes('&', "&cDisabled"));
             newMeta.setLore(newLore);
-            newMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eToggle Global Table"));
+            newMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eToggle Global Chest Table"));
+            itemStack.setType(Material.RED_CONCRETE);
+            itemStack.setItemMeta(newMeta);
+            return itemStack;
+        }
+    }
+
+    private ItemStack toggleGlobalMob(){
+        ItemStack itemStack = new ItemStack(Material.STONE);
+        if(playerMenuManager.isGlobalMob()){
+            ItemMeta newMeta = itemStack.getItemMeta();
+            List<String> newLore = new ArrayList<>();
+            newLore.add(ChatColor.translateAlternateColorCodes('&', "&7Will this table roll each"));
+            newLore.add(ChatColor.translateAlternateColorCodes('&', "&7time mob loot is generated?"));
+            newLore.add("");
+            newLore.add(ChatColor.translateAlternateColorCodes('&', "&aEnabled"));
+            newMeta.setLore(newLore);
+            newMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eToggle Global Mob Table"));
+            itemStack.setType(Material.GREEN_CONCRETE);
+            itemStack.setItemMeta(newMeta);
+            return itemStack;
+        }else {
+            ItemMeta newMeta = itemStack.getItemMeta();
+            List<String> newLore = new ArrayList<>();
+            newLore.add(ChatColor.translateAlternateColorCodes('&', "&7Will this table roll each"));
+            newLore.add(ChatColor.translateAlternateColorCodes('&', "&7time mob loot is generated?"));
+            newLore.add("");
+            newLore.add(ChatColor.translateAlternateColorCodes('&', "&cDisabled"));
+            newMeta.setLore(newLore);
+            newMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eToggle Global Mob Table"));
             itemStack.setType(Material.RED_CONCRETE);
             itemStack.setItemMeta(newMeta);
             return itemStack;

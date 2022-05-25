@@ -57,7 +57,8 @@ public class ListEditCustomTable extends PaginatedMenu {
                 HashMap<String, CustomLootTable> loadedTables = TableList.getLoadedCustomTables();
                 playerMenuManager.setLootTableName(loadedTables.get(name).getName());
                 playerMenuManager.setChance(loadedTables.get(name).getChance());
-                playerMenuManager.setEnabled(loadedTables.get(name).isGlobal());
+                playerMenuManager.setGlobalChest(loadedTables.get(name).isGlobalChest());
+                playerMenuManager.setGlobalMob(loadedTables.get(name).isGlobalMob());
                 playerMenuManager.setMinTableItems(loadedTables.get(name).getMinItems());
                 playerMenuManager.setMaxTableItems(loadedTables.get(name).getMaxItems());
                 playerMenuManager.setTableEntries(loadedTables.get(name).getTableEntries());
@@ -76,7 +77,7 @@ public class ListEditCustomTable extends PaginatedMenu {
         List<LinkedList<TableEntry>> customTableEntries = new LinkedList<>();
         TableList.getLoadedCustomTables().forEach((name, customLootTableUtility) -> {
             customTableNames.add(customLootTableUtility.getName());
-            customTableGlobals.add(customLootTableUtility.isGlobal());
+            customTableGlobals.add(customLootTableUtility.isGlobalChest());
             customTableChances.add(customLootTableUtility.getChance());
             customTableMinItems.add(customLootTableUtility.getMinItems());
             customTableMaxItems.add(customLootTableUtility.getMaxItems());
