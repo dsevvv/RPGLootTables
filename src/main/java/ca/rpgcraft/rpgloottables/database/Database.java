@@ -5,7 +5,6 @@ import ca.rpgcraft.rpgloottables.item.TableEntry;
 import ca.rpgcraft.rpgloottables.util.CustomLootTable;
 import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.sql.*;
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.locks.StampedLock;
 
 public class Database {
 
@@ -81,7 +79,8 @@ public class Database {
     private String createCustomLootTable() {
         return "CREATE TABLE IF NOT EXISTS CustomLootTable (\n"
                 + "custom_id text PRIMARY KEY, \n"
-                + "global integer NOT NULL, \n"
+                + "globalChest integer NOT NULL, \n"
+                + "globalMob integer NOT NULL, \n"
                 + "chance real NOT NULL, \n"
                 + "minItems integer NOT NULL, \n"
                 + "maxItems integer NOT NULL \n"
@@ -157,20 +156,23 @@ public class Database {
 
         for(String key : keys){
             CustomLootTable customLootTable = loadedCustomTables.get(key);
-            String sql = "INSERT OR REPLACE INTO CustomLootTable (custom_id,global,chance,minItems,maxItems) VALUES(?,?,?,?,?)";
+            String sql = "INSERT OR REPLACE INTO CustomLootTable (custom_id,globalChest,globalMob,chance,minItems,maxItems) VALUES(?,?,?,?,?,?)";
             try{
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
                 String name = customLootTable.getName();
-                int boolInt = customLootTable.isGlobal() ? 1 : 0;
+                int boolInt = customLootTable.isGlobalChest() ? 1 : 0;
+                int boolGlobalChest = customLootTable.isGlobalChest() ? 1 : 0;
+                int boolGlobalMob = customLootTable.isGlobalMob() ? 1 : 0;
                 double chance = customLootTable.getChance();
                 int minItems = customLootTable.getMinItems();
                 int maxItems = customLootTable.getMaxItems();
 
                 preparedStatement.setString(1, name);
-                preparedStatement.setInt(2, boolInt);
-                preparedStatement.setDouble(3, chance);
-                preparedStatement.setInt(4, minItems);
-                preparedStatement.setInt(5, maxItems);
+                preparedStatement.setInt(2, boolGlobalChest);
+                preparedStatement.setInt(3, boolGlobalMob);
+                preparedStatement.setDouble(4, chance);
+                preparedStatement.setInt(5, minItems);
+                preparedStatement.setInt(6, maxItems);
                 preparedStatement.executeUpdate();
 
             }catch (SQLException e){
@@ -178,32 +180,6 @@ public class Database {
             }
         }
     }
-
-//    /**
-//     * insertVanillaCustomTables function inserts the custom tables associated with each vanilla table from
-//     * memory into the custom table.
-//     */
-//    private void insertVanillaCustomLootTables(){
-//        HashMap<String, VanillaLootTable> loadedVanillaTables = TableList.getLoadedVanillaTables();
-//        Set<String> keys = loadedVanillaTables.keySet();
-//        for(String key : keys){
-//            VanillaLootTable vanillaLootTable = loadedVanillaTables.get(key);
-//            for(CustomLootTable customTable: vanillaLootTable.getAssociatedTableList()){
-//                String sql = "INSERT OR REPLACE INTO Vanilla_Custom (vanilla_id,custom_id) VALUES(?,?)";
-//                try{
-//                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
-//                    String vanillaId = vanillaLootTable.getVanillaTableName();
-//                    String customId = customTable.getName();
-//                    preparedStatement.setString(1, vanillaId);
-//                    preparedStatement.setString(2, customId);
-//                    preparedStatement.executeUpdate();
-//
-//                }catch (SQLException e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 
     /**
      * itemStackEncode function takes the long string from the ItemStack and "compress" the string down into an array
@@ -289,12 +265,13 @@ public class Database {
             res = stmt.executeQuery("SELECT * from CustomLootTable");
             while(res.next()){
                 String custom_id = res.getString("custom_id");
-                boolean global = res.getBoolean("global");
+                boolean globalChest = res.getBoolean("globalChest");
+                boolean globalMob = res.getBoolean("globalMob");
                 double chance = res.getDouble("chance");
                 int minAmount = res.getInt("minItems");
                 int maxAmount = res.getInt("maxItems");
 
-                clt = new CustomLootTable(custom_id, new LinkedList<TableEntry>(), global, chance, minAmount, maxAmount);
+                clt = new CustomLootTable(custom_id, new LinkedList<TableEntry>(), globalChest, globalMob, chance, minAmount, maxAmount);
                 TableList.getLoadedCustomTables().put(custom_id,clt);
             }
 

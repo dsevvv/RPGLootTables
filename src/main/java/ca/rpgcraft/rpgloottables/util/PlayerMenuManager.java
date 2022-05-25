@@ -9,7 +9,8 @@ public class PlayerMenuManager {
 
     private final Player owner;
     private String lootTableName;
-    private boolean isEnabled;
+    private boolean isGlobalChest;
+    private boolean isGlobalMob;
     private double chance;
     private int minTableItems;
     private int maxTableItems;
@@ -37,12 +38,20 @@ public class PlayerMenuManager {
         this.lootTableName = lootTableName;
     }
 
-    public boolean isEnabled() {
-        return isEnabled;
+    public boolean isGlobalChest() {
+        return isGlobalChest;
     }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+    public void setGlobalChest(boolean globalChest) {
+        isGlobalChest = globalChest;
+    }
+
+    public boolean isGlobalMob() {
+        return isGlobalMob;
+    }
+
+    public void setGlobalMob(boolean globalMob) {
+        isGlobalMob = globalMob;
     }
 
     public double getChance() {

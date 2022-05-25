@@ -57,7 +57,8 @@ public class ListEditCustomTable extends PaginatedMenu {
                 HashMap<String, CustomLootTable> loadedTables = TableList.getLoadedCustomTables();
                 playerMenuManager.setLootTableName(loadedTables.get(name).getName());
                 playerMenuManager.setChance(loadedTables.get(name).getChance());
-                playerMenuManager.setEnabled(loadedTables.get(name).isGlobal());
+                playerMenuManager.setGlobalChest(loadedTables.get(name).isGlobalChest());
+                playerMenuManager.setGlobalMob(loadedTables.get(name).isGlobalMob());
                 playerMenuManager.setMinTableItems(loadedTables.get(name).getMinItems());
                 playerMenuManager.setMaxTableItems(loadedTables.get(name).getMaxItems());
                 playerMenuManager.setTableEntries(loadedTables.get(name).getTableEntries());
@@ -70,13 +71,15 @@ public class ListEditCustomTable extends PaginatedMenu {
     public Inventory getInventory() {
         List<String> customTableNames = new LinkedList<>();
         List<Boolean> customTableGlobals = new LinkedList<>();
+        List<Boolean> customTableGlobalsMob = new LinkedList<>();
         List<Double> customTableChances = new LinkedList<>();
         List<Integer> customTableMinItems = new LinkedList<>();
         List<Integer> customTableMaxItems = new LinkedList<>();
         List<LinkedList<TableEntry>> customTableEntries = new LinkedList<>();
         TableList.getLoadedCustomTables().forEach((name, customLootTableUtility) -> {
             customTableNames.add(customLootTableUtility.getName());
-            customTableGlobals.add(customLootTableUtility.isGlobal());
+            customTableGlobals.add(customLootTableUtility.isGlobalChest());
+            customTableGlobalsMob.add(customLootTableUtility.isGlobalMob());
             customTableChances.add(customLootTableUtility.getChance());
             customTableMinItems.add(customLootTableUtility.getMinItems());
             customTableMaxItems.add(customLootTableUtility.getMaxItems());
@@ -94,7 +97,8 @@ public class ListEditCustomTable extends PaginatedMenu {
                 inventory.addItem(createItem(
                         Material.CHEST,
                         ChatColor.translateAlternateColorCodes('&', customTableNames.get(index)),
-                        ChatColor.translateAlternateColorCodes('&', "&eGlobal: &7" + customTableGlobals.get(index)),
+                        ChatColor.translateAlternateColorCodes('&', "&eGlobal Chest: &7" + customTableGlobals.get(index)),
+                        ChatColor.translateAlternateColorCodes('&', "&eGlobal Mob: &7" + customTableGlobalsMob.get(index)),
                         ChatColor.translateAlternateColorCodes('&', "&eChance: &7" + customTableChances.get(index)),
                         ChatColor.translateAlternateColorCodes('&', "&eMin&7/&eMax: &7" + customTableMinItems.get(index) + "/" + customTableMaxItems.get(index)),
                         ChatColor.translateAlternateColorCodes('&', "&eContents&7: " + customTableEntries.get(index).size()))

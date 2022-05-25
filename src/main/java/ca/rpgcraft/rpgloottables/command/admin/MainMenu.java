@@ -6,12 +6,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Executes RPGLootTable commands.
  */
-public class MainMenu implements CommandExecutor {
+public class MainMenu implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(!command.getName().equalsIgnoreCase("rpgloot")
@@ -51,5 +55,26 @@ public class MainMenu implements CommandExecutor {
         }
 
         return false;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        if(!command.getName().equalsIgnoreCase("rpgloot")
+        && !command.getName().equalsIgnoreCase("rpgl")
+        && !command.getName().equalsIgnoreCase("rloot")
+        && !command.getName().equalsIgnoreCase("rl")) return null;
+        if(args.length == 1){
+            List<String> completions = new ArrayList<>();
+            completions.add("menu");
+
+            List<String> result = new ArrayList<>();
+
+            for(String a : completions){
+                if(a.toLowerCase().startsWith(args[0].toLowerCase()))
+                    result.add(a);
+            }
+            return result;
+        }
+        return null;
     }
 }
