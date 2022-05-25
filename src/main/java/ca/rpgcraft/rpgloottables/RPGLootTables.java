@@ -2,6 +2,7 @@ package ca.rpgcraft.rpgloottables;
 
 import ca.rpgcraft.rpgloottables.command.admin.MainMenu;
 import ca.rpgcraft.rpgloottables.database.Database;
+import ca.rpgcraft.rpgloottables.license.AdvancedLicense;
 import ca.rpgcraft.rpgloottables.listeners.LootGenerate;
 import ca.rpgcraft.rpgloottables.listeners.Menu;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
@@ -25,6 +26,9 @@ public final class RPGLootTables extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
+
+        String key = getConfig().getString("license-key");
+        if (!new AdvancedLicense(key,"https://sevschmidtplugins.000webhostapp.com/verify.php",this).register()) return;
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
 
@@ -65,8 +69,10 @@ public final class RPGLootTables extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        db.saveTables();
-        db.disconnect();
+        if(db != null){
+            db.saveTables();
+            db.disconnect();
+        }
         long startTime = System.currentTimeMillis();
 
         playerMenuUtilityMap = null; //cuz static
