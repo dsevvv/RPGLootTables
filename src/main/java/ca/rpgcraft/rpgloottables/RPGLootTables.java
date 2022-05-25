@@ -11,7 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -27,12 +29,10 @@ public final class RPGLootTables extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
 
-        String key = getConfig().getString("license-key");
-        if (!new AdvancedLicense(key,"https://sevschmidtplugins.000webhostapp.com/verify.php",this).register()) return;
-
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
 
         db = new Database();
+        db.checkLicense();
 
         try{
             db.createDatabase();

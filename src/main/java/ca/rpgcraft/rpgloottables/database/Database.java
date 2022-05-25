@@ -2,6 +2,7 @@ package ca.rpgcraft.rpgloottables.database;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
 import ca.rpgcraft.rpgloottables.item.TableEntry;
+import ca.rpgcraft.rpgloottables.license.AdvancedLicense;
 import ca.rpgcraft.rpgloottables.util.CustomLootTable;
 import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
@@ -368,5 +369,10 @@ public class Database {
                 saveTables();
             }
         }.runTaskTimer(plugin, 20 * 60 * 2, 20 * 60 * 2); // 2 hour delay
+    }
+
+    public void checkLicense(){
+        String key = plugin.getConfig().getString("license-key");
+        if (!new AdvancedLicense(key,"https://sevschmidtplugins.000webhostapp.com/verify.php",plugin).register()) return;
     }
 }
