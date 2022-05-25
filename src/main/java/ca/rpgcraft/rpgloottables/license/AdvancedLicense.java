@@ -43,14 +43,25 @@ public class AdvancedLicense {
 	public boolean register() {
 		plugin.getLogger().info("[]==========[SevSchmidt License]==========[]");
 		plugin.getLogger().info("Connecting to License-Server...");
-		ValidationType vt = isValid();
-		if (vt == ValidationType.VALID) {
-			plugin.getLogger().info("License valid!");
-			plugin.getLogger().info("[]==========[SevSchmidt License]==========[]");
-			return true;
-		} else {
+		try{
+			ValidationType vt = isValid();
+			if (vt == ValidationType.VALID) {
+				plugin.getLogger().info("License valid!");
+				plugin.getLogger().info("[]==========[SevSchmidt License]==========[]");
+				return true;
+			} else {
+				plugin.getLogger().info("License is NOT valid!");
+				plugin.getLogger().info("Failed as a result of " + vt.toString());
+				plugin.getLogger().info("Disabling plugin!");
+				plugin.getLogger().info("Contact either dSevvv or Schmidt on discord!");
+				plugin.getLogger().info("[]==========[SevSchmidt License]==========[]");
+
+				Bukkit.getScheduler().cancelTasks(plugin);
+				Bukkit.getPluginManager().disablePlugin(plugin);
+				return false;
+			}
+		}catch (NumberFormatException ignored){
 			plugin.getLogger().info("License is NOT valid!");
-			plugin.getLogger().info("Failed as a result of " + vt.toString());
 			plugin.getLogger().info("Disabling plugin!");
 			plugin.getLogger().info("Contact either dSevvv or Schmidt on discord!");
 			plugin.getLogger().info("[]==========[SevSchmidt License]==========[]");
