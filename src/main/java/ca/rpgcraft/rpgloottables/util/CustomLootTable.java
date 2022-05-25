@@ -127,6 +127,10 @@ public class CustomLootTable implements LootTable {
         isGlobalChest = globalChest;
     }
 
+    public void setGlobalMob(boolean globalMob) {
+        isGlobalMob = globalMob;
+    }
+
     public double getChance() {
         return chance;
     }
@@ -157,5 +161,19 @@ public class CustomLootTable implements LootTable {
 
     public void setTableEntries(LinkedList<TableEntry> tableEntries) {
         this.tableEntries = tableEntries;
+    }
+
+    @Override
+    public String toString() {
+        return "CustomLootTable{" +
+                "name='" + name + '\'' +
+                ", tableEntries=" + tableEntries +
+                ", entriesCopy=" + entriesCopy +
+                ", isGlobalChest=" + isGlobalChest +
+                ", isGlobalMob=" + isGlobalMob +
+                ", chance=" + chance +
+                ", minItems=" + minItems +
+                ", maxItems=" + maxItems +
+                '}';
     }
 }
