@@ -14,7 +14,6 @@ public class CustomLootTable implements LootTable {
 
     private String name;
     private LinkedList<TableEntry> tableEntries;
-    private final LinkedList<TableEntry> entriesCopy;
     private boolean isGlobalChest;
     private boolean isGlobalMob;
     private double chance;
@@ -37,7 +36,6 @@ public class CustomLootTable implements LootTable {
     public CustomLootTable(String name, LinkedList<TableEntry> tableEntries, boolean isGlobalChest, boolean isGlobalMob, double chance, int minItems, int maxItems){
         this.name = name;
         this.tableEntries = tableEntries;
-        this.entriesCopy = (LinkedList<TableEntry>) tableEntries.clone();
         this.isGlobalChest = isGlobalChest;
         this.isGlobalMob = isGlobalMob;
         this.chance = chance;
@@ -49,8 +47,8 @@ public class CustomLootTable implements LootTable {
     public Collection<ItemStack> populateLoot(Random random, LootContext context) {
         Collection<ItemStack> finalLoot = new ArrayList<>();
         int totalWeight = 0;
-        int bound1 = maxItems - minItems == 0 ? 1 : maxItems - minItems;
-        int slots = random.nextInt(bound1)+minItems;
+        int bound1 = maxItems - minItems;
+        int slots = bound1 <= 0 ? minItems : random.nextInt(bound1) + minItems;
 
         if(random.nextDouble(100) > chance) return finalLoot;
 
@@ -63,21 +61,17 @@ public class CustomLootTable implements LootTable {
             for(TableEntry entry : tableEntries){
                 ItemStack itemStack = entry.getItemStack();
                 int weight = entry.getWeight();
-                int bound2 = entry.getMaxAmt() -entry.getMinAmt() == 0 ? 1 : entry.getMaxAmt() - entry.getMinAmt();
+                int bound2 = entry.getMaxAmt() - entry.getMinAmt() == 0 ? 1 : entry.getMaxAmt() - entry.getMinAmt();
                 int amount = random.nextInt(bound2)+ entry.getMinAmt();
                 itemStack.setAmount(amount);
                 if(roll <= weight){
                     finalLoot.add(itemStack);
-                    totalWeight -= weight;
-                    tableEntries.remove(itemStack);
                     break;
                 }
                 roll -= weight;
             }
         }
 
-        tableEntries.clear();
-        tableEntries.addAll(entriesCopy);
         return finalLoot;
     }
 
@@ -168,7 +162,6 @@ public class CustomLootTable implements LootTable {
         return "CustomLootTable{" +
                 "name='" + name + '\'' +
                 ", tableEntries=" + tableEntries +
-                ", entriesCopy=" + entriesCopy +
                 ", isGlobalChest=" + isGlobalChest +
                 ", isGlobalMob=" + isGlobalMob +
                 ", chance=" + chance +
