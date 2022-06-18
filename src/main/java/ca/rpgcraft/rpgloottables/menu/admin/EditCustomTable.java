@@ -190,6 +190,26 @@ public class EditCustomTable extends Menu {
                 TableList.getLoadedCustomTables().remove(playerMenuManager.getLootTableName());
                 for(String name : oldNames)
                     TableList.getLoadedCustomTables().remove(name);
+                //going through vanilla tables and removing deleted custom table from them as well
+                for(VanillaLootTable vanillaLootTable : TableList.getLoadedVanillaTables().values()){
+                    for(CustomLootTable associatedTable : vanillaLootTable.getAssociatedTableList()){
+                        if(associatedTable.getName().equalsIgnoreCase(playerMenuManager.getLootTableName())){
+                            vanillaLootTable.getAssociatedTableList().remove(associatedTable);
+                            break;
+                        }
+                    }
+                }
+                for(String name : oldNames){
+                    //doing the same thing but for old names
+                    for(VanillaLootTable vanillaLootTable : TableList.getLoadedVanillaTables().values()){
+                        for(CustomLootTable associatedTable : vanillaLootTable.getAssociatedTableList()){
+                            if(associatedTable.getName().equalsIgnoreCase(name)){
+                                vanillaLootTable.getAssociatedTableList().remove(associatedTable);
+                                break;
+                            }
+                        }
+                    }
+                }
                 new ChoiceCustomTable(playerMenuManager).open();
                 break;
             case 43:
