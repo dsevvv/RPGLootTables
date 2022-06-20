@@ -2,18 +2,17 @@ package ca.rpgcraft.rpgloottables;
 
 import ca.rpgcraft.rpgloottables.command.admin.MainMenu;
 import ca.rpgcraft.rpgloottables.database.Database;
-import ca.rpgcraft.rpgloottables.license.AdvancedLicense;
 import ca.rpgcraft.rpgloottables.listeners.LootGenerate;
 import ca.rpgcraft.rpgloottables.listeners.Menu;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
+
+import ca.rpgcraft.rpgloottables.util.VaultHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -22,11 +21,15 @@ public final class RPGLootTables extends JavaPlugin {
     private static HashMap<Player, PlayerMenuManager> playerMenuUtilityMap;
     private Database db;
 
+    private boolean isVault = false;
+    private VaultHandler vaultHandler;
+
     /**
      * Called on server startup or reload
      */
     @Override
     public void onEnable() {
+        long startTime = System.currentTimeMillis();
         saveDefaultConfig();
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
@@ -42,7 +45,6 @@ public final class RPGLootTables extends JavaPlugin {
             e.printStackTrace();
         }
 
-        long startTime = System.currentTimeMillis();
         MainMenu mainMenu = new MainMenu();
         playerMenuUtilityMap = new HashMap<>(); //This map will hold the information within a menu instance for each player
 
@@ -59,6 +61,17 @@ public final class RPGLootTables extends JavaPlugin {
         //registering listeners
         Bukkit.getPluginManager().registerEvents(new Menu(), this);
         Bukkit.getPluginManager().registerEvents(new LootGenerate(), this);
+
+        //hooking into Vault
+        isVault = Bukkit.getPluginManager().getPlugin("Vault") != null;
+        if(isVault){
+            vaultHandler = new VaultHandler();
+            if (!vaultHandler.setupEconomy()) {
+                getLogger().severe(String.format("[%s] - Disabled due to no economy provider being found through Vault. Please install an economy plugin that is compatible with Vault.", getDescription().getName()));
+                getServer().getPluginManager().disablePlugin(this);
+                return;
+            }
+        }
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eHello Minecraft!"));
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eTime Elapsed: &b" + (System.currentTimeMillis() - startTime) + " &ems"));
@@ -91,5 +104,13 @@ public final class RPGLootTables extends JavaPlugin {
             playerMenuUtilityMap.put(p, new PlayerMenuManager(p));
 
         return playerMenuUtilityMap.get(p);
+    }
+
+    public RPGLootTables getInstance(){
+        return RPGLootTables.getPlugin(RPGLootTables.class);
+    }
+
+    public boolean isVault() {
+        return isVault;
     }
 }
