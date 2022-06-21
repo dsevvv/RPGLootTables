@@ -10,7 +10,30 @@ public class TableList {
     private static final HashMap<String, CustomLootTable> loadedCustomTables = new HashMap<>();
     private static final HashMap<String, VanillaLootTable> loadedVanillaTables = new HashMap<>();
 
-    private static String[] mobLootTables = {
+    private static final String[] gameplayLootTables = {
+            "minecraft:gameplay/piglin_bartering"
+//            "minecraft:gameplay/cat_morning_gift",
+//            "minecraft:gameplay/piglin_bartering",
+//            "minecraft:gameplay/fishing/fish",
+//            "minecraft:gameplay/fishing/junk",
+//            "minecraft:gameplay/fishing/treasure",
+//            "minecraft:gameplay/hero_of_the_village/armorer_gift",
+//            "minecraft:gameplay/hero_of_the_village/butcher_gift",
+//            "minecraft:gameplay/hero_of_the_village/cartographer_gift",
+//            "minecraft:gameplay/hero_of_the_village/cleric_gift",
+//            "minecraft:gameplay/hero_of_the_village/farmer_gift",
+//            "minecraft:gameplay/hero_of_the_village/fisherman_gift",
+//            "minecraft:gameplay/hero_of_the_village/fletcher_gift",
+//            "minecraft:gameplay/hero_of_the_village/leatherworker_gift",
+//            "minecraft:gameplay/hero_of_the_village/librarian_gift",
+//            "minecraft:gameplay/hero_of_the_village/mason_gift",
+//            "minecraft:gameplay/hero_of_the_village/shepherd_gift",
+//            "minecraft:gameplay/hero_of_the_village/toolsmith_gift",
+//            "minecraft:gameplay/hero_of_the_village/weaponsmith_gift"
+    };
+
+    private static final String[] mobLootTables = {
+            "minecraft:entities/allay",
             "minecraft:entities/armor_stand",
             "minecraft:entities/axolotl",
             "minecraft:entities/bat",
@@ -31,6 +54,7 @@ public class TableList {
             "minecraft:entities/endermite",
             "minecraft:entities/evoker",
             "minecraft:entities/fox",
+            "minecraft:entities/frog",
             "minecraft:entities/ghast",
             "minecraft:entities/giant",
             "minecraft:entities/glow_squid",
@@ -70,6 +94,7 @@ public class TableList {
             "minecraft:entities/squid",
             "minecraft:entities/stray",
             "minecraft:entities/strider",
+            "minecraft:entities/tadpole",
             "minecraft:entities/trader_llama",
             "minecraft:entities/tropical_fish",
             "minecraft:entities/turtle",
@@ -77,6 +102,7 @@ public class TableList {
             "minecraft:entities/villager",
             "minecraft:entities/vindicator",
             "minecraft:entities/wandering_trader",
+            "minecraft:entities/warden",
             "minecraft:entities/witch",
             "minecraft:entities/wither",
             "minecraft:entities/wither_skeleton",
@@ -88,8 +114,10 @@ public class TableList {
             "minecraft:entities/zombified_piglin"
     };
 
-    private static String[] chestLootTables = {
+    private static final String[] chestLootTables = {
             "minecraft:chests/abandoned_mineshaft",
+            "minecraft:chests/ancient_city",
+            "minecraft:chests/ancient_city_ice_box",
             "minecraft:chests/bastion_bridge",
             "minecraft:chests/bastion_hoglin_stable",
             "minecraft:chests/bastion_other",
@@ -138,6 +166,10 @@ public class TableList {
 
     public static String[] getMobLootTables() {
         return mobLootTables;
+    }
+
+    public static String[] getGameplayLootTables() {
+        return gameplayLootTables;
     }
 
     public static HashMap<String, CustomLootTable> getLoadedCustomTables() {

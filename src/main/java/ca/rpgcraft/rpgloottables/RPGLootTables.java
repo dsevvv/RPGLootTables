@@ -1,9 +1,11 @@
 package ca.rpgcraft.rpgloottables;
 
-import ca.rpgcraft.rpgloottables.command.admin.MainMenu;
+import ca.rpgcraft.rpgloottables.command.Commands;
 import ca.rpgcraft.rpgloottables.database.Database;
 import ca.rpgcraft.rpgloottables.listeners.LootGenerate;
 import ca.rpgcraft.rpgloottables.listeners.Menu;
+import ca.rpgcraft.rpgloottables.listeners.RedeemBankVoucher;
+import ca.rpgcraft.rpgloottables.listeners.RedeemLootVoucher;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 
 import ca.rpgcraft.rpgloottables.util.VaultHandler;
@@ -45,33 +47,30 @@ public final class RPGLootTables extends JavaPlugin {
             e.printStackTrace();
         }
 
-        MainMenu mainMenu = new MainMenu();
+        Commands commands = new Commands();
         playerMenuUtilityMap = new HashMap<>(); //This map will hold the information within a menu instance for each player
 
         //registering commands
-        getCommand("rpgloot").setExecutor(mainMenu);
-        getCommand("rpgl").setExecutor(mainMenu);
-        getCommand("rloot").setExecutor(mainMenu);
-        getCommand("rl").setExecutor(mainMenu);
-        getCommand("rpgloot").setTabCompleter(mainMenu);
-        getCommand("rpgl").setTabCompleter(mainMenu);
-        getCommand("rloot").setTabCompleter(mainMenu);
-        getCommand("rl").setTabCompleter(mainMenu);
-
-        //registering listeners
-        Bukkit.getPluginManager().registerEvents(new Menu(), this);
-        Bukkit.getPluginManager().registerEvents(new LootGenerate(), this);
+        getCommand("cl").setExecutor(commands);
+        getCommand("cl").setTabCompleter(commands);
 
         //hooking into Vault
         isVault = Bukkit.getPluginManager().getPlugin("Vault") != null;
         if(isVault){
             vaultHandler = new VaultHandler();
             if (!vaultHandler.setupEconomy()) {
-                getLogger().severe(String.format("[%s] - Disabled due to no economy provider being found through Vault. Please install an economy plugin that is compatible with Vault.", getDescription().getName()));
+                getLogger().severe("Disabled due to no economy provider being found through Vault. Please install an economy plugin that is compatible with Vault.");
                 getServer().getPluginManager().disablePlugin(this);
                 return;
             }
         }
+
+        //registering listeners
+        Bukkit.getPluginManager().registerEvents(new Menu(), this);
+        Bukkit.getPluginManager().registerEvents(new LootGenerate(), this);
+        Bukkit.getPluginManager().registerEvents(new RedeemLootVoucher(), this);
+        if(isVault)
+            Bukkit.getPluginManager().registerEvents(new RedeemBankVoucher(), this);
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eHello Minecraft!"));
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eTime Elapsed: &b" + (System.currentTimeMillis() - startTime) + " &ems"));
@@ -82,9 +81,12 @@ public final class RPGLootTables extends JavaPlugin {
      */
     @Override
     public void onDisable() {
-        if(db != null){
+        if(db.isConnected()){
             db.saveTables();
             db.disconnect();
+        }
+        else{
+            getLogger().severe("Database is not connected! Cannot save!");
         }
         long startTime = System.currentTimeMillis();
 
@@ -106,11 +108,15 @@ public final class RPGLootTables extends JavaPlugin {
         return playerMenuUtilityMap.get(p);
     }
 
-    public RPGLootTables getInstance(){
+    public static RPGLootTables getInstance(){
         return RPGLootTables.getPlugin(RPGLootTables.class);
     }
 
     public boolean isVault() {
         return isVault;
+    }
+
+    public VaultHandler getVaultHandler() {
+        return vaultHandler;
     }
 }

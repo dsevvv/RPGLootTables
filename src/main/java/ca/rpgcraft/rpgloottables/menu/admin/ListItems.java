@@ -58,7 +58,8 @@ public class ListItems extends PaginatedMenu {
                                    playerMenuManager.getTableEntries().get(index).getItemStack(),
                                    playerMenuManager.getTableEntries().get(index).getWeight(),
                                    playerMenuManager.getTableEntries().get(index).getMinAmt(),
-                                   playerMenuManager.getTableEntries().get(index).getMaxAmt()).open();
+                                   playerMenuManager.getTableEntries().get(index).getMaxAmt(),
+                                   playerMenuManager.getTableEntries().get(index).getUniqueID()).open();
                 break;
         }
     }

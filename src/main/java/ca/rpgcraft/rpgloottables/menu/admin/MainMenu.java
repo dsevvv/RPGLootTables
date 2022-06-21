@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,9 +22,10 @@ public class MainMenu extends Menu {
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
-            case 11 -> new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
-            case 13 -> new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
-            case 15 -> new ChoiceCustomTable(playerMenuManager).open();
+            case 10 -> new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
+            case 12 -> new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
+            case 14 -> new ListGameplay(playerMenuManager, "      &0Gameplay Loot Tables").open();
+            case 16 -> new ChoiceCustomTable(playerMenuManager).open();
             case 22 -> new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -50,14 +52,21 @@ public class MainMenu extends Menu {
         meta1.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Mob Tables"));
         editMobTablesItem.setItemMeta(meta1);
 
-        ItemStack editCustomTablesItem = new ItemStack(Material.ENDER_CHEST);
-        ItemMeta meta2 = editCustomTablesItem.getItemMeta();
-        meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Custom Tables"));
-        editCustomTablesItem.setItemMeta(meta2);
+        ItemStack editGameplayTablesItem = new ItemStack(Material.DIAMOND_SWORD);
+        ItemMeta meta2 = editGameplayTablesItem.getItemMeta();
+        meta2.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Gameplay Tables"));
+        meta2.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        editGameplayTablesItem.setItemMeta(meta2);
 
-        inv.setItem(11, editChestTablesItem);
-        inv.setItem(13, editMobTablesItem);
-        inv.setItem(15, editCustomTablesItem);
+        ItemStack editCustomTablesItem = new ItemStack(Material.ENDER_CHEST);
+        ItemMeta meta3 = editCustomTablesItem.getItemMeta();
+        meta3.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&eEdit Custom Tables"));
+        editCustomTablesItem.setItemMeta(meta3);
+
+        inv.setItem(10, editChestTablesItem);
+        inv.setItem(12, editMobTablesItem);
+        inv.setItem(14, editGameplayTablesItem);
+        inv.setItem(16, editCustomTablesItem);
 
         return inv;
     }

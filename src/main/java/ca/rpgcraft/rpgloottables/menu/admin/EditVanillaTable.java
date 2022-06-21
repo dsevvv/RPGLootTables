@@ -24,6 +24,7 @@ public class EditVanillaTable extends Menu {
     @Override
     public void onMenuClick(Player whoClicked, int rawSlot) {
         switch (rawSlot){
+            //toggle vanilla loot
             case 10:
                 playerMenuManager.setGlobalChest(!playerMenuManager.isGlobalChest());
                 if(playerMenuManager.isGlobalChest())
@@ -32,12 +33,20 @@ public class EditVanillaTable extends Menu {
                     whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&eToggled Vanilla Loot &coff&e."));
                 open();
                 break;
+            //add associated loot table
             case 12:
                 new ListAddCustomTable(playerMenuManager, "&0         Add Custom Table").open();
                 break;
+            //remove associated table
             case 14:
+                if(playerMenuManager.getAssociatedTables().size() == 0){
+                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou have no custom tables associated with this loot table!"));
+                    open();
+                    break;
+                }
                 new ListRemoveCustomTable(playerMenuManager, "&0       Remove Custom Table").open();
                 break;
+            //save and close
             case 16:
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aSaved &6" + playerMenuManager.getLootTableName().replace("minecraft:", "") + "&a."));
                 if(!playerMenuManager.isGlobalChest() || playerMenuManager.getAssociatedTables().size() > 0) //we are only saving to memory if defaults have been modified
@@ -46,14 +55,19 @@ public class EditVanillaTable extends Menu {
                     TableList.getLoadedVanillaTables().remove(playerMenuManager.getLootTableName());
                 if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("chests"))
                     new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
-                else
+                else if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("entities"))
                     new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
+                else
+                    new ListGameplay(playerMenuManager, "      &0Gameplay Loot Tables").open();
                 break;
+            //back
             case 22:
                 if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("chests"))
                     new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
-                else
+                else if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("entities"))
                     new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
+                else
+                    new ListGameplay(playerMenuManager, "      &0Gameplay Loot Tables").open();
                 break;
             default:
                 open();
