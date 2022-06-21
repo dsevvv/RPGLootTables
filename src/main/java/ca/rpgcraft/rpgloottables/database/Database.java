@@ -29,7 +29,6 @@ public class Database {
      * the necessary tables in the db that are needed.
      * @throws SQLException
      */
-
     //Creates a db file called rpgloot in the database file.
     public void createDatabase() throws SQLException {
 
@@ -87,27 +86,13 @@ public class Database {
                 + ");";
     }
 
-//    /**
-//     * createVanillaCustomLootTable function returns a SQL statement that creates the vanilla_custom table in the db file
-//     * @return SQL statment to create Vanilla_Custom table
-//     */
-//    private String createVanillaCustomLootTable() {
-//        return "CREATE TABLE IF NOT EXISTS Vanilla_Custom (\n"
-//                + "vanilla_id text NOT NULL, \n"
-//                + "custom_id text NOT NULL, \n"
-//                + "PRIMARY KEY (vanilla_id, custom_id),\n"
-//                + "FOREIGN KEY (vanilla_id) REFERENCES VanillaLootTable (vanilla_id),\n"
-//                + "FOREIGN KEY (custom_id) REFERENCES CustomLootTable (custom_id)\n"
-//                + ");";
-//    }
-
     /**
      * createItemsLootTable function returns a SQL statement that creates the items table in the db file
      * @return SQL statment to create items table
      */
     private String createItemsTable() {
         return "CREATE TABLE IF NOT EXISTS ItemsTable (\n"
-                + "unique_id integer PRIMARY KEY, \n"
+                + "unique_id text PRIMARY KEY, \n"
                 + "custom_id text NOT NULL, \n"
                 + "weight integer NOT NULL, \n"
                 + "minAmount integer NOT NULL,\n"
@@ -134,7 +119,11 @@ public class Database {
                 int boolInt = vanillaLootTable.isKeepVanillaLoot() ? 1 : 0;
                 StringBuilder innerBuilder = new StringBuilder();
                 for(CustomLootTable customLootTable : vanillaLootTable.getAssociatedTableList()){
-                    innerBuilder.append(customLootTable.getName() + "|");
+                    //if custom loot table no longer exists in TableList, it will be skipped
+                    if(!TableList.getLoadedCustomTables().containsKey(customLootTable.getName())){
+                        continue;
+                    }
+                    innerBuilder.append(customLootTable.getName()).append("|");
                 }
                 preparedStatement.setString(1, name);
                 preparedStatement.setInt(2, boolInt);
@@ -182,49 +171,11 @@ public class Database {
     }
 
     /**
-     * itemStackEncode function takes the long string from the ItemStack and "compress" the string down into an array
-     * of bits.
-     * @return string of bits that is the compressed version of the ItemStack string
-     */
-    private String itemStackEncode(ItemStack item){
-        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-        String encodedObject = null;
-        try {
-            BukkitObjectOutputStream bukkitByteOut = new BukkitObjectOutputStream(byteOut);
-            bukkitByteOut.writeObject(item);
-            bukkitByteOut.flush();
-            byte[] serializedObject = byteOut.toByteArray();
-            encodedObject = new String(Base64.getEncoder().encode(serializedObject));
-        } catch (IOException ignored) {
-            plugin.getLogger().severe("Item Serialization Failed.");
-        }
-        return encodedObject;
-    }
-
-    /**
-     * decodeItemStackBytes function takes the string of bits from the itemStackEncode function and converts it back
-     * into the original string.
-     * @return ItemStack string
-     */
-    private ItemStack decodeItemStackBytes(String bytes){
-        ItemStack newItem = null;
-        try{
-            byte[] reserializedObject = Base64.getDecoder().decode(bytes);
-            ByteArrayInputStream byteIn = new ByteArrayInputStream(reserializedObject);
-            BukkitObjectInputStream bukkitByteIs = new BukkitObjectInputStream(byteIn);
-            newItem = (ItemStack) bukkitByteIs.readObject();
-        } catch (IOException | ClassNotFoundException ignored){
-            plugin.getLogger().severe("Byte array decoding failed.");
-        }
-        return newItem;
-    }
-
-    /**
      * insertItemTables function loops through all of the items that are used in each custom loot table and adds everything
      * into the ItemsTable in the db file.
      * @return ItemStack string
      */
-    private void insertItemTables(){
+    private void insertTableEntries(){
         HashMap<String, CustomLootTable> loadedCustomTables = TableList.getLoadedCustomTables();
         Set<String> keys = loadedCustomTables.keySet();
         for(String key : keys){
@@ -233,6 +184,7 @@ public class Database {
                 String sql = "INSERT OR REPLACE INTO ItemsTable (unique_id,custom_id,weight,minAmount,maxAmount,itemStack) VALUES(?,?,?,?,?,?)";
                 try{
                     PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    String uniqueID = tableEntry.getUniqueID().toString();
                     String customId = customLootTable.getName();
                     int weight = tableEntry.getWeight();
                     int minAmount = tableEntry.getMinAmt();
@@ -240,7 +192,7 @@ public class Database {
                     ItemStack itemStack = tableEntry.getItemStack();
                     String encodedItemStack = itemStackEncode(itemStack);
 
-                    preparedStatement.setInt(1, Types.NULL);
+                    preparedStatement.setString(1, uniqueID);
                     preparedStatement.setString(2, customId);
                     preparedStatement.setInt(3, weight);
                     preparedStatement.setInt(4, minAmount);
@@ -252,6 +204,48 @@ public class Database {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private void deleteMissingCustomTables() {
+        Statement stmt;
+        ResultSet res;
+        //delete CustomTables that are not in the loadedCustomTables from the db
+        try {
+            stmt = conn.createStatement();
+            res = stmt.executeQuery("SELECT * from CustomLootTable");
+            while (res.next()) {
+                String custom_id = res.getString("custom_id");
+                if (!TableList.getLoadedCustomTables().containsKey(custom_id)) {
+                    String sql = "DELETE FROM CustomLootTable WHERE custom_id = ?";
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    preparedStatement.setString(1, custom_id);
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deleteMissingVanillaTables() {
+        Statement stmt;
+        ResultSet res;
+        //delete VanillaTables that are not in the loadedVanillaTables from the db
+        try {
+            stmt = conn.createStatement();
+            res = stmt.executeQuery("SELECT * from VanillaLootTable");
+            while (res.next()) {
+                String vanilla_id = res.getString("vanilla_id");
+                if (!TableList.getLoadedVanillaTables().containsKey(vanilla_id)) {
+                    String sql = "DELETE FROM VanillaLootTable WHERE vanilla_id = ?";
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    preparedStatement.setString(1, vanilla_id);
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -289,15 +283,24 @@ public class Database {
             stmt = conn.createStatement();
             res = stmt.executeQuery("SELECT * FROM ItemsTable");
             while(res.next()){
+                String uniqueIDStr = res.getString("unique_id");
+                UUID uniqueID = UUID.fromString(uniqueIDStr);
                 String custom_id = res.getString("custom_id");
                 CustomLootTable clt = TableList.getLoadedCustomTables().get(custom_id);
+                if(clt == null){
+                    String sql = "DELETE FROM ItemsTable WHERE unique_id = ?";
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    preparedStatement.setString(1, uniqueIDStr);
+                    preparedStatement.executeUpdate();
+                    continue;
+                }
                 Integer weight = res.getInt("weight");
                 Integer minAmount = res.getInt("minAmount");
                 Integer maxAmount = res.getInt("maxAmount");
                 String itemStack = res.getString("itemStack");
                 ItemStack item = decodeItemStackBytes(itemStack);
 
-                te = new TableEntry(item, weight,minAmount,maxAmount);
+                te = new TableEntry(uniqueID, item, weight,minAmount,maxAmount);
 
                 clt.getTableEntries().add(te);
             }
@@ -320,8 +323,13 @@ public class Database {
                 String customNames = res.getString("customNames");
                 String[] customNameSplit = customNames.split("\\|");
                 vlt = new VanillaLootTable(vanilla_id,new LinkedList<CustomLootTable>(),enabled);
+                //skipping VanillaTable entry if they have default values
+                if(vlt.isKeepVanillaLoot() && vlt.getAssociatedTableList().size() == 0){
+                    continue;
+                }
                 for(String name: customNameSplit){
-                    vlt.getAssociatedTableList().add(TableList.getLoadedCustomTables().get(name));
+                    if(TableList.getLoadedCustomTables().containsKey(name))
+                        vlt.getAssociatedTableList().add(TableList.getLoadedCustomTables().get(name));
                 }
                 TableList.getLoadedVanillaTables().put(vanilla_id,vlt);
             }
@@ -341,9 +349,11 @@ public class Database {
      * saveTables function Calls all insert methods to be called at once.
      */
     public void saveTables(){
+        deleteMissingCustomTables();
+        deleteMissingVanillaTables();
         insertVanillaTables();
+        insertTableEntries();
         insertCustomLootTables();
-        insertItemTables();
     }
 
     public boolean isConnected() {return conn != null;}
@@ -386,5 +396,43 @@ public class Database {
         }
         String key = plugin.getConfig().getString(path);
         return new AdvancedLicense(key, link, plugin).register();
+    }
+
+    /**
+     * itemStackEncode function takes the long string from the ItemStack and "compress" the string down into an array
+     * of bits.
+     * @return string of bits that is the compressed version of the ItemStack string
+     */
+    private String itemStackEncode(ItemStack item){
+        ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+        String encodedObject = null;
+        try {
+            BukkitObjectOutputStream bukkitByteOut = new BukkitObjectOutputStream(byteOut);
+            bukkitByteOut.writeObject(item);
+            bukkitByteOut.flush();
+            byte[] serializedObject = byteOut.toByteArray();
+            encodedObject = new String(Base64.getEncoder().encode(serializedObject));
+        } catch (IOException ignored) {
+            plugin.getLogger().severe("Item Serialization Failed.");
+        }
+        return encodedObject;
+    }
+
+    /**
+     * decodeItemStackBytes function takes the string of bits from the itemStackEncode function and converts it back
+     * into the original string.
+     * @return ItemStack string
+     */
+    private ItemStack decodeItemStackBytes(String bytes){
+        ItemStack newItem = null;
+        try{
+            byte[] reserializedObject = Base64.getDecoder().decode(bytes);
+            ByteArrayInputStream byteIn = new ByteArrayInputStream(reserializedObject);
+            BukkitObjectInputStream bukkitByteIs = new BukkitObjectInputStream(byteIn);
+            newItem = (ItemStack) bukkitByteIs.readObject();
+        } catch (IOException | ClassNotFoundException ignored){
+            plugin.getLogger().severe("Byte array decoding failed.");
+        }
+        return newItem;
     }
 }

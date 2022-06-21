@@ -1,8 +1,8 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
 import ca.rpgcraft.rpgloottables.menu.standard.PaginatedMenu;
-import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
+import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.LinkedList;
 
-public class ListMob extends PaginatedMenu {
-    public ListMob(PlayerMenuManager playerMenuManager, String inventoryName) {
+public class ListGameplay extends PaginatedMenu {
+    public ListGameplay(PlayerMenuManager playerMenuManager, String inventoryName) {
         super(playerMenuManager, inventoryName);
     }
 
@@ -39,7 +39,7 @@ public class ListMob extends PaginatedMenu {
                 playerMenuManager.setLootTableName("");
                 break;
             case 50:
-                if(index + 1 >= TableList.getMobLootTables().length){
+                if(index + 1 >= TableList.getGameplayLootTables().length){
                     playerMenuManager.getOwner().sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou are already on the last page!"));
                     open();
                     break;
@@ -49,7 +49,7 @@ public class ListMob extends PaginatedMenu {
                 break;
             default:
                 if(!getInventory().getItem(rawSlot).getType().equals(Material.CHEST)
-                && !getInventory().getItem(rawSlot).getType().equals(Material.ENDER_CHEST)){
+                        && !getInventory().getItem(rawSlot).getType().equals(Material.ENDER_CHEST)){
                     open();
                     break;
                 }
@@ -72,17 +72,17 @@ public class ListMob extends PaginatedMenu {
 
     @Override
     public Inventory getInventory() {
-        String[] vanillaMobTables = TableList.getMobLootTables();
+        String[] gameplayTables = TableList.getGameplayLootTables();
 
         inventory.clear();
         addPaginatedMenuBorder();
 
         for(int i = 0; i < getMaxItemsPerPage(); i++){
-            index = getMaxItemsPerPage() * page + i;
-            if(index >= vanillaMobTables.length) break;
-            if(!vanillaMobTables[index].isBlank()){
-                if(TableList.getLoadedVanillaTables().containsKey(vanillaMobTables[index])){
-                    VanillaLootTable vanillaLootTable = TableList.getLoadedVanillaTables().get(vanillaMobTables[index]);
+            index = i + (page * getMaxItemsPerPage());
+            if(index >= gameplayTables.length) break;
+            if(!gameplayTables[index].isBlank()){
+                if(TableList.getLoadedVanillaTables().containsKey(gameplayTables[index])){
+                    VanillaLootTable vanillaLootTable = TableList.getLoadedVanillaTables().get(gameplayTables[index]);
                     inventory.addItem(createItem(
                             Material.ENDER_CHEST,
                             vanillaLootTable.getVanillaTableName(),
@@ -92,7 +92,7 @@ public class ListMob extends PaginatedMenu {
                 }else{
                     inventory.addItem(createItem(
                             Material.CHEST,
-                            vanillaMobTables[index]));
+                            gameplayTables[index]));
                 }
             }
         }

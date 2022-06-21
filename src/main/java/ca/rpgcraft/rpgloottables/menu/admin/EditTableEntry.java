@@ -15,6 +15,8 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.UUID;
+
 public class EditTableEntry extends Menu {
 
     private ItemStack itemStack;
@@ -22,14 +24,16 @@ public class EditTableEntry extends Menu {
     private int weight;
     private int min;
     private int max;
+    private UUID uniqueID;
 
-    public EditTableEntry(PlayerMenuManager playerMenuManager, int index, ItemStack itemStack, int weight, int min, int max) {
+    public EditTableEntry(PlayerMenuManager playerMenuManager, int index, ItemStack itemStack, int weight, int min, int max, UUID uniqueID) {
         super(playerMenuManager);
         this.index = index;
         this.itemStack = itemStack;
         this.weight = weight;
         this.min = min;
         this.max = max;
+        this.uniqueID = uniqueID;
     }
 
     @Override
@@ -112,7 +116,7 @@ public class EditTableEntry extends Menu {
                         .open(whoClicked);
                 break;
             case 16:
-                playerMenuManager.getTableEntries().set(index, new TableEntry(itemStack, weight, min, max));
+                playerMenuManager.getTableEntries().set(index, new TableEntry(uniqueID, itemStack, weight, min, max));
                 new EditCustomTable(playerMenuManager).open();
                 break;
             case 22:

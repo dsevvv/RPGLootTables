@@ -5,11 +5,10 @@ api-version: 1.18
 authors: [ dsevvv ]
 description: Plugin that controls the loot tables for naturally generated chests.
 website: github.com/dsevvv/rpgloottables
+softdepend:
+  - Vault
+  - WorldGuard
+  - MythicMobs
 commands:
-  rpgloot:
-
-  rpgl:
-
-  rloot:
-
-  rl:
+  cl:
+    aliases: ["customloot", "customloottables", "clt"]

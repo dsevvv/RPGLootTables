@@ -6,7 +6,7 @@
 
     <groupId>ca.rpgcraft</groupId>
     <artifactId>RPGLootTables</artifactId>
-    <version>1.1.1</version>
+    <version>2.0.0-ALPHA</version>
     <packaging>jar</packaging>
 
     <name>RPGLootTables</name>
@@ -29,48 +29,48 @@
                     <target>17</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.github.wvengen</groupId>
-                <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.5.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>proguard</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <obfuscate>true</obfuscate>
-                    <injar>${project.build.finalName}.jar</injar>
-                    <outjar>${project.build.finalName}.jar</outjar>
-                    <outputDirectory>${project.build.directory}</outputDirectory>
-                    <proguardInclude>${basedir}/proguard.conf</proguardInclude>
-                    <libs>
-                        <lib>${java.home}/jmods/java.base.jmod</lib>
-                        <lib>${java.home}/jmods/java.logging.jmod</lib>
-                    </libs>
-                    <options>
-                        <option>-verbose</option>
-                        <option>-dontnote module-info</option>
-                        <option>-dontnote jdk.internal.jimage.*</option>
-                        <option>-dontnote jdk.internal.jimage.decompressor.*</option>
-                        <option>-dontnote jdk.internal.jrtfs.*</option>
-                        <option>-dontwarn java.sql.**</option>
-                        <option>-keepclassmembers, allowobfuscation class * {
-                            @org.bukkit.event.EventHandler *;
-                            }
-                        </option>
-                        <option>-overloadaggressively</option>
-                        <option>-repackageclasses</option>
-                        <option>-keepattributes *Annotation*, Override, InnerClasses, Exceptions, Signature, SourceFile, LineNumberTable</option>
-                        <option>-keep public class ca.rpgcraft.rpgloottables.RPGLootTables</option>
-                        <option>-keep public class net.wesjd.**</option>
-                        <option>-printmapping proguard_map_custom_loot_tables</option>
-                    </options>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>com.github.wvengen</groupId>-->
+<!--                <artifactId>proguard-maven-plugin</artifactId>-->
+<!--                <version>2.5.1</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>proguard</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <obfuscate>true</obfuscate>-->
+<!--                    <injar>${project.build.finalName}.jar</injar>-->
+<!--                    <outjar>${project.build.finalName}.jar</outjar>-->
+<!--                    <outputDirectory>${project.build.directory}</outputDirectory>-->
+<!--                    <proguardInclude>${basedir}/proguard.conf</proguardInclude>-->
+<!--                    <libs>-->
+<!--                        <lib>${java.home}/jmods/java.base.jmod</lib>-->
+<!--                        <lib>${java.home}/jmods/java.logging.jmod</lib>-->
+<!--                    </libs>-->
+<!--                    <options>-->
+<!--                        <option>-verbose</option>-->
+<!--                        <option>-dontnote module-info</option>-->
+<!--                        <option>-dontnote jdk.internal.jimage.*</option>-->
+<!--                        <option>-dontnote jdk.internal.jimage.decompressor.*</option>-->
+<!--                        <option>-dontnote jdk.internal.jrtfs.*</option>-->
+<!--                        <option>-dontwarn java.sql.**</option>-->
+<!--                        <option>-keepclassmembers, allowobfuscation class * {-->
+<!--                            @org.bukkit.event.EventHandler *;-->
+<!--                            }-->
+<!--                        </option>-->
+<!--                        <option>-overloadaggressively</option>-->
+<!--                        <option>-repackageclasses</option>-->
+<!--                        <option>-keepattributes *Annotation*, Override, InnerClasses, Exceptions, Signature, SourceFile, LineNumberTable</option>-->
+<!--                        <option>-keep public class ca.rpgcraft.rpgloottables.RPGLootTables</option>-->
+<!--                        <option>-keep public class net.wesjd.**</option>-->
+<!--                        <option>-printmapping proguard_map_custom_loot_tables</option>-->
+<!--                    </options>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -116,6 +116,10 @@
             <id>codemc-snapshots</id>
             <url>https://repo.codemc.io/repository/maven-snapshots/</url>
         </repository>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -135,6 +139,12 @@
             <artifactId>commons-codec</artifactId>
             <version>20041127.091804</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

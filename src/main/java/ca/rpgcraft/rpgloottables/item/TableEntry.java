@@ -2,8 +2,11 @@ package ca.rpgcraft.rpgloottables.item;
 
 import org.bukkit.inventory.ItemStack;
 
+import java.util.UUID;
+
 public class TableEntry {
 
+    private UUID uniqueID;
     private ItemStack itemStack;
     private Integer weight;
     private Integer minAmt;
@@ -17,6 +20,15 @@ public class TableEntry {
      * @param maxAmt int maximum amount of ItemStacks
      */
     public TableEntry(ItemStack itemStack, Integer weight, Integer minAmt, Integer maxAmt){
+        this.uniqueID = UUID.randomUUID();
+        this.itemStack = itemStack;
+        this.weight = weight;
+        this.minAmt = minAmt;
+        this.maxAmt = maxAmt;
+    }
+
+    public TableEntry(UUID uniqueID, ItemStack itemStack, Integer weight, Integer minAmt, Integer maxAmt){
+        this.uniqueID = uniqueID;
         this.itemStack = itemStack;
         this.weight = weight;
         this.minAmt = minAmt;
@@ -53,5 +65,9 @@ public class TableEntry {
 
     public void setMaxAmt(Integer maxAmt) {
         this.maxAmt = maxAmt;
+    }
+
+    public UUID getUniqueID() {
+        return uniqueID;
     }
 }

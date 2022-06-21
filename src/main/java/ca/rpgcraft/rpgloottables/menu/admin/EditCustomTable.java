@@ -24,13 +24,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class EditCustomTable extends Menu {
 
     private NumberFormat doubleFormat = new DecimalFormat("#0.00");
-    private List<String> oldNames = new LinkedList<>();
 
     public EditCustomTable(PlayerMenuManager playerMenuManager) {
         super(playerMenuManager);
@@ -55,8 +53,16 @@ public class EditCustomTable extends Menu {
                             if(TableList.getLoadedCustomTables().containsKey(text)){
                                 return AnvilGUI.Response.text(ChatColor.translateAlternateColorCodes('&', "&cName taken!"));
                             }
-                            oldNames.add(playerMenuManager.getLootTableName());
+                            TableList.getLoadedCustomTables().remove(playerMenuManager.getLootTableName());
                             playerMenuManager.setLootTableName(ChatColor.translateAlternateColorCodes('&', text));
+                            TableList.getLoadedCustomTables().put(playerMenuManager.getLootTableName(), new CustomLootTable(
+                                    playerMenuManager.getLootTableName(),
+                                    playerMenuManager.getTableEntries(),
+                                    playerMenuManager.isGlobalChest(),
+                                    playerMenuManager.isGlobalMob(),
+                                    playerMenuManager.getChance(),
+                                    playerMenuManager.getMinTableItems(),
+                                    playerMenuManager.getMaxTableItems()));
                             player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aTable has been renamed to &6" + playerMenuManager.getLootTableName() + "&a."));
                             open();
                             return AnvilGUI.Response.close();
@@ -161,11 +167,18 @@ public class EditCustomTable extends Menu {
                         if(!e.getPlayer().equals(whoClicked)) return;
                         switch (e.getMessage()){
                             case "add":
+                                ItemStack singleItem = whoClicked.getInventory().getItemInMainHand().clone();
+                                if(singleItem.getType().equals(Material.AIR)){
+                                    whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou must have an item in your hand to add to the loot table."));
+                                    e.setCancelled(true);
+                                    open();
+                                    HandlerList.unregisterAll(this);
+                                    break;
+                                }
                                 String itemName = whoClicked.getInventory().getItemInMainHand().getItemMeta().getDisplayName().isBlank() ?
                                        ChatColor.YELLOW + WordUtils.capitalizeFully(whoClicked.getInventory().getItemInMainHand().getType().name().replace("_", " ")) : ChatColor.YELLOW + whoClicked.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
                                 e.setCancelled(true);
                                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', itemName + " &aadded to &6" + playerMenuManager.getLootTableName() + "&a."));
-                                ItemStack singleItem = whoClicked.getInventory().getItemInMainHand().clone();
                                 singleItem.setAmount(1);
                                 playerMenuManager.getTableEntries().add(new TableEntry(singleItem, 1, 1, 1));
                                 open();
@@ -188,25 +201,12 @@ public class EditCustomTable extends Menu {
             case 37:
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + playerMenuManager.getLootTableName() + " &cdeleted!"));
                 TableList.getLoadedCustomTables().remove(playerMenuManager.getLootTableName());
-                for(String name : oldNames)
-                    TableList.getLoadedCustomTables().remove(name);
                 //going through vanilla tables and removing deleted custom table from them as well
                 for(VanillaLootTable vanillaLootTable : TableList.getLoadedVanillaTables().values()){
                     for(CustomLootTable associatedTable : vanillaLootTable.getAssociatedTableList()){
                         if(associatedTable.getName().equalsIgnoreCase(playerMenuManager.getLootTableName())){
                             vanillaLootTable.getAssociatedTableList().remove(associatedTable);
                             break;
-                        }
-                    }
-                }
-                for(String name : oldNames){
-                    //doing the same thing but for old names
-                    for(VanillaLootTable vanillaLootTable : TableList.getLoadedVanillaTables().values()){
-                        for(CustomLootTable associatedTable : vanillaLootTable.getAssociatedTableList()){
-                            if(associatedTable.getName().equalsIgnoreCase(name)){
-                                vanillaLootTable.getAssociatedTableList().remove(associatedTable);
-                                break;
-                            }
                         }
                     }
                 }
@@ -219,16 +219,13 @@ public class EditCustomTable extends Menu {
                 for(VanillaLootTable vanillaLootTable : TableList.getLoadedVanillaTables().values()){
                     int i = 0;
                     for(CustomLootTable customUtility : vanillaLootTable.getAssociatedTableList()){
-                        if(customUtility.getName().equalsIgnoreCase(playerMenuManager.getLootTableName())
-                        || oldNames.contains(customUtility.getName())){
+                        if(customUtility.getName().equalsIgnoreCase(playerMenuManager.getLootTableName())){
                             vanillaLootTable.getAssociatedTableList().remove(i);
                             vanillaLootTable.getAssociatedTableList().add(customLootTable);
                         }
                         i++;
                     }
                 }
-                for(String name : oldNames)
-                    TableList.getLoadedCustomTables().remove(name);
                 new ChoiceCustomTable(playerMenuManager).open();
                 break;
             case 49:

@@ -1,1 +1,11 @@
 license-key: "AAAA-AAAA-AAAA-AAAA"
+
+bank_voucher:
+  enabled: true
+  type: PAPER
+  name: "&eBank Voucher"
+
+loot_voucher:
+  enabled: true
+  type: PAPER
+  name: "&eLoot Voucher"

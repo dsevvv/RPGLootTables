@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PiglinBarterEvent;
 import org.bukkit.event.world.LootGenerateEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -67,6 +68,18 @@ public class LootGenerate implements Listener {
         for(ItemStack item : tempInv.getContents()){
             if(item == null) continue;
             e.getEntity().getWorld().dropItem(e.getEntity().getLocation(), item);
+        }
+    }
+
+    @EventHandler
+    public void onPiglinBarter(PiglinBarterEvent e){
+        String key = "minecraft:gameplay/piglin_bartering";
+        if(!TableList.getLoadedVanillaTables().containsKey(key)) return;
+        VanillaLootTable vanillaLootTable = TableList.getLoadedVanillaTables().get(key);
+        if(!vanillaLootTable.isKeepVanillaLoot())
+            e.getOutcome().clear();
+        for(CustomLootTable customLootTable : vanillaLootTable.getAssociatedTableList()){
+            e.getOutcome().addAll(customLootTable.populateLoot(new Random(), new LootContext.Builder(e.getEntity().getLocation()).build()));
         }
     }
 }
