@@ -153,12 +153,12 @@ public class EditCustomTable extends Menu {
                 open();
                 break;
             case 31:
-                whoClicked.sendTitle(
-                        ChatColor.translateAlternateColorCodes('&', "&bAdd Item"),
-                        "",
-                        10,
-                        40,
-                        10);
+//                whoClicked.sendTitle(
+//                        ChatColor.translateAlternateColorCodes('&', "&bAdd Item"),
+//                        "",
+//                        10,
+//                        40,
+//                        10);
                 whoClicked.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aType &eadd &ato add the item in your main hand to the loot table.\nType &ecancel &ato cancel item entry."));
                 whoClicked.closeInventory();
                 class PlayerChatListener implements Listener {

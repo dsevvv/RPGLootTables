@@ -249,6 +249,28 @@ public class Database {
         }
     }
 
+    public void deleteVanillaTable(VanillaLootTable vlt){
+        String sql = "DELETE FROM VanillaLootTable WHERE vanilla_id = ?";
+        try{
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, vlt.getVanillaTableName());
+            preparedStatement.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteCustomTable(CustomLootTable clt){
+        String sql = "DELETE FROM CustomLootTable WHERE custom_id = ?";
+        try{
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, clt.getName());
+            preparedStatement.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     private void retrieveCustomLootTables() {
         Statement stmt;
         ResultSet res;
@@ -288,10 +310,7 @@ public class Database {
                 String custom_id = res.getString("custom_id");
                 CustomLootTable clt = TableList.getLoadedCustomTables().get(custom_id);
                 if(clt == null){
-                    String sql = "DELETE FROM ItemsTable WHERE unique_id = ?";
-                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                    preparedStatement.setString(1, uniqueIDStr);
-                    preparedStatement.executeUpdate();
+                    deleteCustomTable(clt);
                     continue;
                 }
                 Integer weight = res.getInt("weight");

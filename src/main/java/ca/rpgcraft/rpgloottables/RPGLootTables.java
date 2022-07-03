@@ -2,13 +2,16 @@ package ca.rpgcraft.rpgloottables;
 
 import ca.rpgcraft.rpgloottables.command.Commands;
 import ca.rpgcraft.rpgloottables.database.Database;
-import ca.rpgcraft.rpgloottables.listeners.LootGenerate;
-import ca.rpgcraft.rpgloottables.listeners.Menu;
-import ca.rpgcraft.rpgloottables.listeners.RedeemBankVoucher;
-import ca.rpgcraft.rpgloottables.listeners.RedeemLootVoucher;
+import ca.rpgcraft.rpgloottables.hook.mythic.MythicMobDeath;
+import ca.rpgcraft.rpgloottables.hook.mythic.MythicMobsHandler;
+import ca.rpgcraft.rpgloottables.hook.worldguard.WorldGuardHandler;
+import ca.rpgcraft.rpgloottables.listener.LootGenerate;
+import ca.rpgcraft.rpgloottables.listener.Menu;
+import ca.rpgcraft.rpgloottables.listener.RedeemBankVoucher;
+import ca.rpgcraft.rpgloottables.listener.RedeemLootVoucher;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 
-import ca.rpgcraft.rpgloottables.util.VaultHandler;
+import ca.rpgcraft.rpgloottables.hook.vault.VaultHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -24,14 +27,21 @@ public final class RPGLootTables extends JavaPlugin {
     private Database db;
 
     private boolean isVault = false;
+    private boolean isMythicMobs = false;
+    private boolean isWorldGuard = false;
+
     private VaultHandler vaultHandler;
+    private MythicMobsHandler mythicMobsHandler;
+    private WorldGuardHandler worldGuardHandler;
 
     /**
      * Called on server startup or reload
      */
     @Override
     public void onEnable() {
+
         long startTime = System.currentTimeMillis();
+
         saveDefaultConfig();
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
@@ -65,12 +75,28 @@ public final class RPGLootTables extends JavaPlugin {
             }
         }
 
+        //hooking into MythicMobs
+//        isMythicMobs = Bukkit.getPluginManager().getPlugin("MythicMobs") != null;
+//        if(isMythicMobs){
+//            mythicMobsHandler = new MythicMobsHandler();
+//            getLogger().info("Hooked into MythicMobs.");
+//        }
+
+        //hooking into WorldGuard
+        isWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
+        if(isWorldGuard){
+            getLogger().info("Hooked into WorldGuard.");
+            this.worldGuardHandler = new WorldGuardHandler();
+        }
+
         //registering listeners
         Bukkit.getPluginManager().registerEvents(new Menu(), this);
         Bukkit.getPluginManager().registerEvents(new LootGenerate(), this);
         Bukkit.getPluginManager().registerEvents(new RedeemLootVoucher(), this);
         if(isVault)
             Bukkit.getPluginManager().registerEvents(new RedeemBankVoucher(), this);
+        if(isMythicMobs)
+            Bukkit.getPluginManager().registerEvents(new MythicMobDeath(), this);
 
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eHello Minecraft!"));
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eTime Elapsed: &b" + (System.currentTimeMillis() - startTime) + " &ems"));
@@ -81,6 +107,9 @@ public final class RPGLootTables extends JavaPlugin {
      */
     @Override
     public void onDisable() {
+
+        long startTime = System.currentTimeMillis();
+
         if(db.isConnected()){
             db.saveTables();
             db.disconnect();
@@ -88,7 +117,6 @@ public final class RPGLootTables extends JavaPlugin {
         else{
             getLogger().severe("Database is not connected! Cannot save!");
         }
-        long startTime = System.currentTimeMillis();
 
         playerMenuUtilityMap = null; //cuz static
 
@@ -116,7 +144,23 @@ public final class RPGLootTables extends JavaPlugin {
         return isVault;
     }
 
+    public boolean isMythicMobs() {
+        return isMythicMobs;
+    }
+
+    public boolean isWorldGuard() {
+        return isWorldGuard;
+    }
+
     public VaultHandler getVaultHandler() {
         return vaultHandler;
+    }
+
+    public MythicMobsHandler getMythicMobsHandler() {
+        return mythicMobsHandler;
+    }
+
+    public WorldGuardHandler getWorldGuardHandler() {
+        return worldGuardHandler;
     }
 }

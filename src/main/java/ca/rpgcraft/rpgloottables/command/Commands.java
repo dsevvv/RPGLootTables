@@ -1,6 +1,7 @@
 package ca.rpgcraft.rpgloottables.command;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
+import ca.rpgcraft.rpgloottables.hook.vault.VaultHandler;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import ca.rpgcraft.rpgloottables.util.TableList;
 import org.bukkit.ChatColor;
@@ -55,7 +56,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         }
 
         if(args[0].equalsIgnoreCase("reload")){
-            if(!player.hasPermission("rpgloot.reload")){
+            if(!player.hasPermission("rpgloot.reload") && !player.hasPermission("rpgloot.admin")){
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to do that."));
                 return false;
             }
@@ -67,7 +68,7 @@ public class Commands implements CommandExecutor, TabCompleter {
         if(args[0].equalsIgnoreCase("version")
         || args[0].equalsIgnoreCase("ver")
         || args[0].equalsIgnoreCase("v")){
-            if(!player.hasPermission("rpgloot.version")){
+            if(!player.hasPermission("rpgloot.version") && !player.hasPermission("rpgloot.admin")){
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to do that."));
                 return false;
             }
@@ -89,10 +90,12 @@ public class Commands implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cUsage: /cl bank_voucher <amount>"));
                 return false;
             }
-            if(!player.hasPermission("rpgloot.bank_voucher")){
+            if(!player.hasPermission("rpgloot.bank_voucher.create") && !player.hasPermission("rpgloot.admin")){
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to use this command."));
                 return false;
             }
+
+            VaultHandler vaultHandler = RPGLootTables.getInstance().getVaultHandler();
             double amount = 0;
             try{
                 amount = Double.parseDouble(args[1]);
@@ -100,6 +103,20 @@ public class Commands implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cInvalid amount specified."));
                 return false;
             }
+            //Check if player has enough money, unless if they have the permission to bypass the check.
+            if(!player.hasPermission("rpgloot.bank_voucher.bypass") && !player.hasPermission("rpgloot.admin")){
+                if(!vaultHandler.hasEnoughMoney(player, amount)){
+                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have enough money to create a bank voucher of that value."));
+                    return false;
+                }
+
+                //Take money from player and send them a message telling them how much was taken and how much they have left.
+                vaultHandler.withdrawMoney(player, amount);
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou have taken &6" + vaultHandler.format(amount) + "&a from your bank account."));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&aYou have &6" + vaultHandler.format(vaultHandler.getBalance(player)) + "&a left in your bank account."));
+            }
+
+
             ItemStack voucher = createBankVoucher(amount);
             player.getInventory().addItem(voucher);
             return false;
@@ -114,12 +131,22 @@ public class Commands implements CommandExecutor, TabCompleter {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cUsage: /cl loot_voucher <customTableName>"));
                 return false;
             }
+            if(!player.hasPermission("rpgloot.loot_voucher.create") && !player.hasPermission("rpgloot.admin")){
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to use this command."));
+                return false;
+            }
+
             StringBuilder nameBuilder = new StringBuilder();
             for(int i = 1; i < args.length; i++){
                 nameBuilder.append(args[i]);
                 nameBuilder.append(" ");
             }
             String name = nameBuilder.toString().trim();
+            if(!player.hasPermission("rpgloot.loot_voucher.create." + name) && !player.hasPermission("rpgloot.loot_voucher.create.*") && !player.hasPermission("rpgloot.admin")){
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&cYou do not have permission to use this command."));
+                return false;
+            }
+
             if(TableList.getLoadedCustomTables().containsKey(name)){
                 ItemStack item = createLootVoucher(name);
                 player.getInventory().addItem(item);
@@ -138,12 +165,12 @@ public class Commands implements CommandExecutor, TabCompleter {
         if(args.length == 1){
             List<String> completions = new ArrayList<>();
 
+            completions.add("bank_voucher");
             completions.add("help");
+            completions.add("loot_voucher");
             completions.add("menu");
             completions.add("reload");
             completions.add("version");
-            completions.add("bank_voucher");
-            completions.add("loot_voucher");
 
             List<String> result = new ArrayList<>();
 
@@ -180,7 +207,13 @@ public class Commands implements CommandExecutor, TabCompleter {
                 "&e========== &bCustom Loot Tables &e=========="));
         sender.sendMessage(ChatColor.translateAlternateColorCodes(
                 '&',
+                "&6/cl bank_voucher <amount>&a - Get a bank voucher item that will reward the player who right-clicks this item with the amount of money specified on the voucher."));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes(
+                '&',
                 "&e/cl help &7- &bShows this help message."));
+        sender.sendMessage(ChatColor.translateAlternateColorCodes(
+                '&',
+                "&6/cl loot_voucher <customTableName>&a - Get a loot voucher item that will reward the player who right-clicks this item with random items from the specified custom table."));
         sender.sendMessage(ChatColor.translateAlternateColorCodes(
                 '&',
                 "&6/cl menu&a - Open the menu."));
@@ -190,9 +223,6 @@ public class Commands implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.translateAlternateColorCodes(
                 '&',
                 "&6/cl version&a - Show the version of the plugin."));
-        sender.sendMessage(ChatColor.translateAlternateColorCodes(
-                '&',
-                "&6/cl bank_voucher <amount>&a - Get a bank voucher item that will reward the player who right-clicks this item with the amount of money specified on the voucher."));
         sender.sendMessage(ChatColor.translateAlternateColorCodes(
                 '&',
                 "&e========== &bCustom Loot Tables &e=========="));
