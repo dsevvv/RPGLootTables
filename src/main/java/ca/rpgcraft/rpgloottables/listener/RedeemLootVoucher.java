@@ -1,4 +1,4 @@
-package ca.rpgcraft.rpgloottables.listeners;
+package ca.rpgcraft.rpgloottables.listener;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
 import ca.rpgcraft.rpgloottables.util.CustomLootTable;

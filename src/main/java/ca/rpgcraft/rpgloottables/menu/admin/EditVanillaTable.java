@@ -1,5 +1,7 @@
 package ca.rpgcraft.rpgloottables.menu.admin;
 
+import ca.rpgcraft.rpgloottables.RPGLootTables;
+import ca.rpgcraft.rpgloottables.hook.mythic.ListMythic;
 import ca.rpgcraft.rpgloottables.menu.standard.Menu;
 import ca.rpgcraft.rpgloottables.util.PlayerMenuManager;
 import ca.rpgcraft.rpgloottables.util.TableList;
@@ -53,21 +55,11 @@ public class EditVanillaTable extends Menu {
                     TableList.getLoadedVanillaTables().put(playerMenuManager.getLootTableName(), new VanillaLootTable(playerMenuManager.getLootTableName(), playerMenuManager.getAssociatedTables(), playerMenuManager.isGlobalChest()));
                 else
                     TableList.getLoadedVanillaTables().remove(playerMenuManager.getLootTableName());
-                if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("chests"))
-                    new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
-                else if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("entities"))
-                    new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
-                else
-                    new ListGameplay(playerMenuManager, "      &0Gameplay Loot Tables").open();
+                new MainMenu(playerMenuManager).open();
                 break;
             //back
             case 22:
-                if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("chests"))
-                    new ListChest(playerMenuManager, "    &0Vanilla Chest Loot Tables").open();
-                else if(playerMenuManager.getLootTableName().replace("minecraft:", "").contains("entities"))
-                    new ListMob(playerMenuManager, "     &0Vanilla Mob Loot Tables").open();
-                else
-                    new ListGameplay(playerMenuManager, "      &0Gameplay Loot Tables").open();
+                new MainMenu(playerMenuManager).open();
                 break;
             default:
                 open();

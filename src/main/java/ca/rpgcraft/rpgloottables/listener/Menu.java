@@ -1,4 +1,4 @@
-package ca.rpgcraft.rpgloottables.listeners;
+package ca.rpgcraft.rpgloottables.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -1,6 +1,7 @@
-package ca.rpgcraft.rpgloottables.listeners;
+package ca.rpgcraft.rpgloottables.listener;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
+import ca.rpgcraft.rpgloottables.hook.worldguard.RegionLoot;
 import ca.rpgcraft.rpgloottables.util.CustomLootTable;
 import ca.rpgcraft.rpgloottables.util.TableList;
 import ca.rpgcraft.rpgloottables.util.VanillaLootTable;
@@ -39,6 +40,10 @@ public class LootGenerate implements Listener {
                 clone.fillInventory(e.getInventoryHolder().getInventory(), new Random(), e.getLootContext());
             }
         }
+
+        if(RPGLootTables.getInstance().isWorldGuard()){
+            RegionLoot.onLootGenerate(e);
+        }
     }
 
     @EventHandler
@@ -63,6 +68,10 @@ public class LootGenerate implements Listener {
                 CustomLootTable clone = new CustomLootTable(customLootTable.getName(), customLootTable.getTableEntries(), customLootTable.isGlobalChest(), customLootTable.isGlobalMob(), customLootTable.getChance(), customLootTable.getMinItems(), customLootTable.getMaxItems());
                 clone.fillInventory(tempInv, new Random(), new LootContext.Builder(e.getEntity().getLocation()).build());
             }
+        }
+
+        if(RPGLootTables.getInstance().isWorldGuard()){
+            RegionLoot.onEntityDeath(e, tempInv);
         }
 
         for(ItemStack item : tempInv.getContents()){

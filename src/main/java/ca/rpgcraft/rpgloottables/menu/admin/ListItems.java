@@ -74,7 +74,7 @@ public class ListItems extends PaginatedMenu {
         for(int i = 0; i < getMaxItemsPerPage(); i++){
             index = getMaxItemsPerPage() * page + i;
             if(index >= tableEntries.size()) break;
-            ItemStack tempItem = tableEntries.get(index).getItemStack();
+            ItemStack tempItem = tableEntries.get(index).getItemStack().clone();
             ItemMeta meta = tempItem.getItemMeta();
             List<String> lore = new LinkedList<>();
             lore.add(ChatColor.translateAlternateColorCodes('&', "&eWeight&7: " + tableEntries.get(index).getWeight()));

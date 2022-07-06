@@ -1,7 +1,7 @@
-package ca.rpgcraft.rpgloottables.listeners;
+package ca.rpgcraft.rpgloottables.listener;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
-import ca.rpgcraft.rpgloottables.util.VaultHandler;
+import ca.rpgcraft.rpgloottables.hook.vault.VaultHandler;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;

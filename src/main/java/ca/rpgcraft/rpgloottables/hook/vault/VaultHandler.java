@@ -1,4 +1,4 @@
-package ca.rpgcraft.rpgloottables.util;
+package ca.rpgcraft.rpgloottables.hook.vault;
 
 import ca.rpgcraft.rpgloottables.RPGLootTables;
 import net.milkbowl.vault.economy.Economy;
@@ -46,7 +46,23 @@ public class VaultHandler {
         return item.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(RPGLootTables.getInstance(), "bank_voucher"), PersistentDataType.DOUBLE);
     }
 
+    public boolean hasEnoughMoney(Player player, double amount){
+        return econ.has(Bukkit.getOfflinePlayer(player.getUniqueId()), amount);
+    }
+
+    public void withdrawMoney(Player player, double amount){
+        econ.withdrawPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()), amount);
+    }
+
     private double getVoucherValue(ItemStack item){
         return item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(RPGLootTables.getInstance(), "bank_voucher"), PersistentDataType.DOUBLE);
+    }
+
+    public String format(double amount){
+        return econ.format(amount);
+    }
+
+    public double getBalance(Player player){
+        return econ.getBalance(Bukkit.getOfflinePlayer(player.getUniqueId()));
     }
 }
