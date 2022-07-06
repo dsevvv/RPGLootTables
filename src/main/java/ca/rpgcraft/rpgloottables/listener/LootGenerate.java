@@ -16,7 +16,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.loot.LootContext;
 
-import javax.swing.plaf.synth.Region;
 import java.util.Random;
 
 /**
