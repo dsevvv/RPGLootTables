@@ -48,7 +48,7 @@ public class CustomLootTable implements LootTable {
         Collection<ItemStack> finalLoot = new ArrayList<>();
         int totalWeight = 0;
         int bound1 = maxItems - minItems;
-        int slots = bound1 <= 0 ? minItems : random.nextInt(bound1) + minItems;
+        int slots = bound1 <= 0 ? minItems : random.nextInt(bound1 + 1) + minItems;
 
         if(random.nextDouble(100) > chance) return finalLoot;
 

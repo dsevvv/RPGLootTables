@@ -47,7 +47,7 @@ public final class RPGLootTables extends JavaPlugin {
         getLogger().info(ChatColor.translateAlternateColorCodes('&', "&eRunning startup..."));
 
         db = new Database();
-        if(!db.checkLicense()) return;
+        //if(!db.checkLicense()) return;
 
         try{
             db.createDatabase();
