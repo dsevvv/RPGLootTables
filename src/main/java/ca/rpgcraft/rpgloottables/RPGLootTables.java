@@ -76,11 +76,11 @@ public final class RPGLootTables extends JavaPlugin {
         }
 
         //hooking into MythicMobs
-//        isMythicMobs = Bukkit.getPluginManager().getPlugin("MythicMobs") != null;
-//        if(isMythicMobs){
-//            mythicMobsHandler = new MythicMobsHandler();
-//            getLogger().info("Hooked into MythicMobs.");
-//        }
+        isMythicMobs = Bukkit.getPluginManager().getPlugin("MythicMobs") != null;
+        if(isMythicMobs){
+            mythicMobsHandler = new MythicMobsHandler();
+            getLogger().info("Hooked into MythicMobs.");
+        }
 
         //hooking into WorldGuard
         isWorldGuard = Bukkit.getPluginManager().getPlugin("WorldGuard") != null;
